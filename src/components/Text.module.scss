@@ -1,0 +1,136 @@
+@use '@/colors.scss' as *;
+
+.caption1Medium {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  color: $grey1000;
+}
+
+.caption2Regular {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 14px;
+  color: $grey1000;
+}
+
+.caption2Bold {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 14px;
+  color: $grey1000;
+}
+
+.caption1Bold {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  color: $red400;
+}
+
+.body2Regular {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: $grey1000;
+}
+
+.body2Medium {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: $grey1000;
+}
+
+.body2Bold {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 18px;
+  color: $grey1000;
+}
+
+.body1Regular {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  color: $grey1000;
+}
+
+.body1Medium {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  color: $grey1000;
+}
+
+.body1Bold {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 22px;
+  color: $grey1000;
+}
+
+.headline5 {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 22px;
+  color: $grey1000;
+}
+
+.headline4 {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: $grey1000;
+}
+
+.headline3 {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 30px;
+  color: $grey1000;
+}
+
+.headline2 {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 36px;
+  color: $grey1000;
+}
+
+.headline1 {
+  font-family: 'Outfit';
+  display: block;
+  font-weight: 900;
+  font-size: 32px;
+  line-height: 42px;
+  color: $grey1000;
+}

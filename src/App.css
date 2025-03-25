@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  background-color: #f8f8f8;
+  font-synthesis: none !important;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('@/assets/fonts/Outfit-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CeraPro-Regular';
+  src: url('@/assets/fonts/CeraPro-Regular.ttf') format('truetype');
+}

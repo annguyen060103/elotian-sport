@@ -1,0 +1,61 @@
+@use '@/colors.scss' as *;
+
+.button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  border-width: 0;
+  height: 44px;
+  padding: 0 16px;
+  cursor: pointer;
+  border-style: solid;
+}
+
+.primary {
+  background-color: $primary500;
+}
+
+.primaryBlack {
+  background-color: $grey1000;
+}
+
+.secondaryWhite {
+  background-color: transparent;
+  border: 2px solid white;
+}
+
+.secondaryBlack {
+  background-color: transparent;
+  border: 1px solid $grey1000;
+
+  span.buttonText {
+    color: $grey1000;
+  }
+}
+
+span.buttonText {
+  color: white;
+}
+
+.text {
+  background-color: white;
+}
+
+.outline {
+  border-color: $grey1000;
+  border-width: 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  background-color: transparent;
+}
+
+.withIcon {
+  gap: 4px;
+}
+
+.disabled {
+  background-color: $grey300;
+  cursor: not-allowed;
+}
