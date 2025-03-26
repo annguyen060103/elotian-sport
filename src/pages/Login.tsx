@@ -1,5 +1,4 @@
-// src/pages/Login.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Login.module.scss';
 import { message, Form, FormProps } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +6,8 @@ import { Controller, useForm } from 'react-hook-form';
 import elotian_green_logo from '@/assets/images/elotian_green_logo.svg';
 import { Input } from '@/components/Input';
 import { Button } from '@/components/Button';
+// import api from '@/api/posts';
+import axios from 'axios';
 
 type LoginFormData = {
   email: string;
@@ -15,6 +16,7 @@ type LoginFormData = {
 
 export const Login = () => {
   const { t } = useTranslation();
+  const [posts, setPosts] = useState([]);
 
   const {
     handleSubmit,
@@ -32,6 +34,48 @@ export const Login = () => {
     console.log('Failed:', errorInfo);
     message.error('Login failed. Please check your input.');
   };
+
+  // useEffect(() => {
+  //   const fetchPosts = async () => {
+  //     try {
+  //       const response = await api.get('/posts');
+  //       setPosts(response.data);
+  //     } catch (error) {
+  //       if (error.response) {
+  //         console.log(error.response.data);
+  //         console.log(error.response.status);
+  //         console.log(error.response.headers);
+  //       } else {
+  //         console.log(`Error: ${error.message}`);
+  //       }
+  //     }
+  //   };
+  //   fetchPosts();
+  // }, []);
+
+  const data = JSON.stringify({
+    username: 'admin',
+    password: 'admin',
+  });
+
+  const config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'https://gym-crm.lehaitien.site/auth/token',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  axios
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
   return (
     <div className={styles.container}>
