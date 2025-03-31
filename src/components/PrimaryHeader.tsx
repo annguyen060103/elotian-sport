@@ -19,7 +19,7 @@ export const PrimaryHeader = () => {
           className={styles.elotian}
         />
 
-        <Text type="Body 1 Bold">{t('elotian')}</Text>
+        <Text type="Big Title 1">{t('elotian')}</Text>
 
         <div className={styles.adminAndAvatar}>
           <Text type="Body 2 Bold">{t('admin')}</Text>

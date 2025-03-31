@@ -51,8 +51,9 @@
   background-color: $primary500;
   gap: 16px;
   position: fixed;
-  top: 64px; // Push down to make space for the horizontal header
+  top: 120px;
   left: 0;
+  position: absolute;
 }
 
 .active {

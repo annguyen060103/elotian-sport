@@ -18,7 +18,8 @@ export type TextType =
   | 'Headline 4'
   | 'Headline 3'
   | 'Headline 2'
-  | 'Headline 1';
+  | 'Headline 1'
+  | 'Big Title 1';
 
 type TextProps = {
   children: React.ReactNode;
@@ -43,6 +44,7 @@ const typeToClassMap: Record<TextType, string> = {
   'Headline 3': styles.headline3,
   'Headline 2': styles.headline2,
   'Headline 1': styles.headline1,
+  'Big Title 1': styles.bigTitle1,
 };
 
 export function Text({ children, className, type }: TextProps) {
