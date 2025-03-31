@@ -89,14 +89,14 @@
   "endDateRequired": "End month is required",
   "gender": "Gender",
   "color": "Color",
-  "elotian": "ELOTIAN SPORT",
+  "elotian": "ELOTIAN SPORT FOR LIFE",
   "admin": "Admin",
-  "course": "Course",
-  "courseManagement": "Coure management",
-  "trainer": "Trainer",
-  "student": "Student",
-  "staff": "Staff",
-  "device": "Device",
-  "report": "Report",
-  "code": "Activate code"
+  "course": "Courses",
+  "courseManagement": "Coures management",
+  "trainer": "Trainers ",
+  "student": "Students ",
+  "staff": "Staffs",
+  "device": "Devices",
+  "report": "Reports",
+  "code": "Activate codes"
 }
