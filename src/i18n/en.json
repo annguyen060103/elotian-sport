@@ -88,5 +88,15 @@
   "startDateRequired": "Start month is required",
   "endDateRequired": "End month is required",
   "gender": "Gender",
-  "color": "Color"
+  "color": "Color",
+  "elotian": "ELOTIAN SPORT",
+  "admin": "Admin",
+  "course": "Course",
+  "courseManagement": "Coure management",
+  "trainer": "Trainer",
+  "student": "Student",
+  "staff": "Staff",
+  "device": "Device",
+  "report": "Report",
+  "code": "Activate code"
 }
