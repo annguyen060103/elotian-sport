@@ -1,59 +1,21 @@
 @use '@/colors.scss' as *;
 
-.wrapper {
+.container {
   display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100%;
-}
-
-.horizontalHeader {
-  display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
   padding: 16px;
-  background-color: #f8f8f8;
-  color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  height: 72px;
+  background-color: $primary500;
+  gap: 16px;
+  position: relative;
 }
 
 .elotian {
-  padding-left: 16px;
-  width: 80px;
-  height: auto;
-}
-
-.adminAndAvatar {
-  display: flex;
-  margin-top: 16px;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.avatar {
-  flex-direction: row;
-  align-items: center;
-  gap: 2px;
-  padding-right: 16px;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding: 16px;
-  height: 100vh;
-  width: 200px;
-  background-color: $primary500;
-  gap: 16px;
-  position: fixed;
-  top: 120px;
-  left: 0;
   position: absolute;
+  left: 16px;
+  width: 80px;
 }
 
 .active {
@@ -65,23 +27,28 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  margin: 10px auto 0 auto;
 }
 
 .pending {
   padding: 8px 16px;
   text-decoration: none;
-  margin: 10px auto 0 auto;
 
   span {
     color: white;
   }
 }
 
-.signOut {
-  position: static;
-  left: 16px;
-  width: 200px;
-  margin-top: 100px;
-  padding: 16px;
+.accountAndSignOut {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  position: absolute;
+  right: 16px;
+}
+
+.account {
+  flex-direction: row;
+  align-items: center;
 }
