@@ -1,12 +1,12 @@
 // src/App.tsx
 import React, { JSX } from 'react';
 import {
-  Device,
+  Equipment,
   Login,
   Student,
   Trainer,
   Report,
-  Code,
+  Token,
   Admin,
   Course,
   Staff,
@@ -62,10 +62,10 @@ export default function App() {
         }
       />
       <Route
-        path="/device"
+        path="/equipment"
         element={
           <RequireAuth>
-            <Device />
+            <Equipment />
           </RequireAuth>
         }
       />
@@ -78,10 +78,10 @@ export default function App() {
         }
       />
       <Route
-        path="/code"
+        path="/token"
         element={
           <RequireAuth>
-            <Code />
+            <Token />
           </RequireAuth>
         }
       />

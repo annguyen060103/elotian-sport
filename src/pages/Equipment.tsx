@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import styles from './Course.module.scss';
+import styles from './Equipment.module.scss';
 import { Text } from '@/components/Text';
 import { Button, Popconfirm } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
@@ -17,93 +17,82 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 
-interface CourseData {
+interface ReportData {
   id: string;
-  courseName: string;
-  timetable: string;
-  schedule: string;
-  trainerName: string;
+  equipmentName: string;
+  purchaseDate: string;
+  condition: string;
 }
 
-export const Course = () => {
+export const Report = () => {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const initialData: CourseData[] = [
+  const initialData: ReportData[] = [
     {
       id: '1',
-      courseName: 'React Basic',
-      timetable: 'Monday - Wednesday',
-      schedule: 'July 2025',
-      trainerName: 'John Doe',
+      equipmentName: 'John Doe',
+      purchaseDate: '35',
+      condition: '2023-2026',
     },
     {
       id: '2',
-      courseName: 'Node.js Advanced',
-      timetable: 'Tuesday - Thursday',
-      schedule: 'August 2025',
-      trainerName: 'Jane Smith',
+      equipmentName: 'Jane Smith',
+      purchaseDate: '29',
+      condition: '2022-2025',
     },
     {
       id: '3',
-      courseName: 'Python for Data Science',
-      timetable: 'Weekend',
-      schedule: 'September 2025',
-      trainerName: 'Alice Johnson',
+      equipmentName: 'Alice Johnson',
+      purchaseDate: '40',
+      condition: '2021-2024',
     },
     {
       id: '4',
-      courseName: 'UI/UX Design',
-      timetable: 'Tuesday - Thursday',
-      schedule: 'November 2025',
-      trainerName: 'Eva Brown',
+      equipmentName: 'Bob Williams',
+      purchaseDate: '32',
+      condition: '2024-2027',
     },
     {
       id: '5',
-      courseName: 'Mobile App Development',
-      timetable: 'Tuesday - Saturday',
-      schedule: 'March 2026',
-      trainerName: 'Bruce Wayne',
+      equipmentName: 'Eva Brown',
+      purchaseDate: '27',
+      condition: '2023-2026',
     },
     {
       id: '6',
-      courseName: 'Kubernetes Administration',
-      timetable: 'Wednesday - Friday',
-      schedule: 'May 2026',
-      trainerName: 'Peter Parker',
+      equipmentName: 'Chris Green',
+      purchaseDate: '45',
+      condition: '2020-2023',
     },
     {
       id: '7',
-      courseName: 'Blockchain Fundamentals',
-      timetable: 'Monday - Thursday',
-      schedule: 'June 2026',
-      trainerName: 'Natasha Romanoff',
+      equipmentName: 'Diana Prince',
+      purchaseDate: '30',
+      condition: '2023-2026',
     },
     {
       id: '8',
-      courseName: 'Java Spring Boot',
-      timetable: 'Weekend',
-      schedule: 'July 2026',
-      trainerName: 'Stephen Strange',
+      equipmentName: 'Tony Stark',
+      purchaseDate: '38',
+      condition: '2022-2025',
     },
     {
       id: '9',
-      courseName: 'AWS Cloud Practitioner',
-      timetable: 'Monday - Wednesday',
-      schedule: 'August 2026',
-      trainerName: 'Steve Rogers',
+      equipmentName: 'Bruce Wayne',
+      purchaseDate: '41',
+      condition: '2021-2024',
     },
     {
       id: '10',
-      courseName: 'Data Visualization with D3.js',
-      timetable: 'Tuesday - Friday',
-      schedule: 'September 2026',
-      trainerName: 'Wanda Maximoff',
+      equipmentName: 'Clark Kent',
+      purchaseDate: '36',
+      condition: '2023-2026',
     },
   ];
 
-  const [data, setData] = useState<CourseData[]>(initialData);
+  const [data, setData] = useState<ReportData[]>(initialData);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
 
@@ -121,8 +110,8 @@ export const Course = () => {
     const isAsc = order === 'asc';
     const sorted = [...data].sort((a, b) =>
       isAsc
-        ? a.courseName.localeCompare(b.courseName)
-        : b.courseName.localeCompare(a.courseName),
+        ? a.equipmentName.localeCompare(b.equipmentName)
+        : b.equipmentName.localeCompare(a.equipmentName),
     );
     setData(sorted);
     setOrder(isAsc ? 'desc' : 'asc');
@@ -149,7 +138,7 @@ export const Course = () => {
       <div className={styles.topSection}>
         <div className={styles.leftSection}>
           <span className={styles.title}>
-            <Text type="Headline 1">{t('courseManagement')}</Text>
+            <Text type="Headline 1">{t('reportManagement')}</Text>
           </span>
         </div>
         <div className={styles.rightSection}>
@@ -188,19 +177,19 @@ export const Course = () => {
               </TableCell>
               <TableCell>
                 <TableSortLabel active direction={order} onClick={handleSort}>
-                  <Text className={styles.courseNameText} type="Caption 1 Bold">
-                    Course name
+                  <Text
+                    className={styles.equipmentNameText}
+                    type="Caption 1 Bold"
+                  >
+                    Equipment name
                   </Text>
                 </TableSortLabel>
               </TableCell>
               <TableCell>
-                <Text type="Caption 1 Medium">Timetable</Text>
+                <Text type="Caption 1 Medium">Purchase of day</Text>
               </TableCell>
               <TableCell>
-                <Text type="Caption 1 Medium">Training schedule</Text>
-              </TableCell>
-              <TableCell>
-                <Text type="Caption 1 Medium">Trainer</Text>
+                <Text type="Caption 1 Medium">Condition</Text>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -220,16 +209,13 @@ export const Course = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Bold">{row.courseName}</Text>
+                    <Text type="Body 2 Bold">{row.equipmentName}</Text>
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Regular">{row.timetable}</Text>
+                    <Text type="Body 2 Regular">{row.purchaseDate}</Text>
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Regular">{row.schedule}</Text>
-                  </TableCell>
-                  <TableCell>
-                    <Text type="Body 2 Regular">{row.trainerName}</Text>
+                    <Text type="Body 2 Regular">{row.condition}</Text>
                   </TableCell>
                   <TableCell>
                     <Popconfirm

@@ -94,9 +94,14 @@
   "course": "Courses",
   "courseManagement": "Courses management",
   "trainer": "Trainers ",
-  "student": "Students ",
+  "trainerManagement": "Trainers management",
+  "student": "Students",
+  "studentManagement": "Students management",
   "staff": "Staffs",
-  "device": "Devices",
+  "staffManagement": "Staffs management",
+  "equipment": "Equipments",
+  "equipmentManagement": "Equipments management",
   "report": "Reports",
-  "code": "Activate codes"
+  "reportManagement": "Reports management",
+  "token": "Token"
 }
