@@ -1,4 +1,4 @@
-export const Code = () => {
+export const Token = () => {
   return (
     <div style={{ textAlign: 'center', marginTop: '20px' }}>
       <h1>Code Management</h1>
