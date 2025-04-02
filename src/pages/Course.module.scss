@@ -1,0 +1,55 @@
+@use '@/colors.scss' as *;
+
+.courseNameText {
+  color: $grey1000;
+}
+
+.remainingText {
+  color: $grey600;
+}
+
+.container {
+  padding: 24px 48px;
+  background-color: #f8f8f8;
+}
+
+.topSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.addNewButton {
+  background-color: $primary500;
+  border-radius: 20px;
+  color: white;
+  font-size: large;
+}
+
+.userActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+
+  > img {
+    margin-left: 16px;
+    cursor: pointer;
+  }
+}
+
+.deletedButton {
+  background-color: $red400;
+  border-radius: 20px;
+  color: white;
+  font-size: large;
+}

@@ -4,107 +4,90 @@ import { NavLink } from 'react-router-dom';
 import { Button } from './Button';
 import styles from './PrimaryHeader.module.scss';
 import { Text } from './Text';
-import elotian_black_logo from '@/assets/images/elotian_black_logo.svg';
-import avatar from '@/assets/icons/avatar.svg';
+import elotian from '@/assets/images/elotian_black_logo.svg';
+import account_logo from '@/assets/icons/account_logo.svg';
 
 export const PrimaryHeader = () => {
   const { t } = useTranslation();
 
   return (
-    <div className={styles.wrapper}>
-      <header className={styles.horizontalHeader}>
-        <img
-          src={elotian_black_logo}
-          alt="elotian_black_logo"
-          className={styles.elotian}
-        />
+    <header className={styles.container}>
+      <img src={elotian} className={styles.elotian} />
+      {
+        <NavLink
+          to="/course"
+          className={({ isActive, isPending }) =>
+            isPending ? '' : isActive ? styles.active : styles.pending
+          }
+        >
+          <Text type="Body 2 Bold">{t('course')}</Text>
+        </NavLink>
+      }
+      {
+        <NavLink
+          to="/trainer"
+          className={({ isActive, isPending }) =>
+            isPending ? '' : isActive ? styles.active : styles.pending
+          }
+        >
+          <Text type="Body 2 Bold">{t('trainer')}</Text>
+        </NavLink>
+      }
+      {
+        <NavLink
+          to="/student"
+          className={({ isActive, isPending }) =>
+            isPending ? '' : isActive ? styles.active : styles.pending
+          }
+        >
+          <Text type="Body 2 Bold">{t('student')}</Text>
+        </NavLink>
+      }
+      {
+        <NavLink
+          to="/staff"
+          className={({ isActive, isPending }) =>
+            isPending ? '' : isActive ? styles.active : styles.pending
+          }
+        >
+          <Text type="Body 2 Bold">{t('staff')}</Text>
+        </NavLink>
+      }
+      {
+        <NavLink
+          to="/device"
+          className={({ isActive, isPending }) =>
+            isPending ? '' : isActive ? styles.active : styles.pending
+          }
+        >
+          <Text type="Body 2 Bold">{t('device')}</Text>
+        </NavLink>
+      }
+      {
+        <NavLink
+          to="/report"
+          className={({ isActive, isPending }) =>
+            isPending ? '' : isActive ? styles.active : styles.pending
+          }
+        >
+          <Text type="Body 2 Bold">{t('report')}</Text>
+        </NavLink>
+      }
+      {
+        <NavLink
+          to="/code"
+          className={({ isActive, isPending }) =>
+            isPending ? '' : isActive ? styles.active : styles.pending
+          }
+        >
+          <Text type="Body 2 Bold">{t('code')}</Text>
+        </NavLink>
+      }
 
-        <Text type="Big Title 1">{t('elotian')}</Text>
-
-        <div className={styles.adminAndAvatar}>
-          <Text type="Body 2 Bold">{t('admin')}</Text>
-          <img src={avatar} alt="avatar" className={styles.avatar} />
-        </div>
-      </header>
-
-      <aside className={styles.container}>
-        {
-          <NavLink
-            to="/course"
-            className={({ isActive, isPending }) =>
-              isPending ? '' : isActive ? styles.active : styles.pending
-            }
-          >
-            <Text type="Body 2 Bold">{t('course')}</Text>
-          </NavLink>
-        }
-        {
-          <NavLink
-            to="/trainer"
-            className={({ isActive, isPending }) =>
-              isPending ? '' : isActive ? styles.active : styles.pending
-            }
-          >
-            <Text type="Body 2 Bold">{t('trainer')}</Text>
-          </NavLink>
-        }
-        {
-          <NavLink
-            to="/student"
-            className={({ isActive, isPending }) =>
-              isPending ? '' : isActive ? styles.active : styles.pending
-            }
-          >
-            <Text type="Body 2 Bold">{t('student')}</Text>
-          </NavLink>
-        }
-        {
-          <NavLink
-            to="/staff"
-            className={({ isActive, isPending }) =>
-              isPending ? '' : isActive ? styles.active : styles.pending
-            }
-          >
-            <Text type="Body 2 Bold">{t('staff')}</Text>
-          </NavLink>
-        }
-        {
-          <NavLink
-            to="/device"
-            className={({ isActive, isPending }) =>
-              isPending ? '' : isActive ? styles.active : styles.pending
-            }
-          >
-            <Text type="Body 2 Bold">{t('device')}</Text>
-          </NavLink>
-        }
-        {
-          <NavLink
-            to="/report"
-            className={({ isActive, isPending }) =>
-              isPending ? '' : isActive ? styles.active : styles.pending
-            }
-          >
-            <Text type="Body 2 Bold">{t('report')}</Text>
-          </NavLink>
-        }
-        {
-          <NavLink
-            to="/code"
-            className={({ isActive, isPending }) =>
-              isPending ? '' : isActive ? styles.active : styles.pending
-            }
-          >
-            <Text type="Body 2 Bold">{t('code')}</Text>
-          </NavLink>
-        }
-
-        <Button
-          title={t('signOut')}
-          type="secondary-white"
-          className={styles.signOut}
-        />
-      </aside>
-    </div>
+      <div className={styles.accountAndSignOut}>
+        <img src={account_logo} className={styles.account} />
+        <Button title={t('signOut')} type="secondary-white" />
+      </div>
+    </header>
   );
 };
