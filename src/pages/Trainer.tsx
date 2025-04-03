@@ -1,21 +1,23 @@
-import { useTranslation } from 'react-i18next';
-import styles from './Trainer.module.scss';
-import { Text } from '@/components/Text';
-import { Button, Popconfirm } from 'antd';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Popconfirm } from "antd";
 import {
+  Checkbox,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Checkbox,
-  Paper,
-  TableSortLabel,
   TablePagination,
-} from '@mui/material';
-import { useState } from 'react';
+  TableRow,
+  TableSortLabel,
+} from "@mui/material";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+
+import { Text } from "@/components/Text";
+import styles from "./Trainer.module.scss";
+import { useTranslation } from "react-i18next";
+import { useUser } from "@/hooks/useUser";
 
 interface TrainerData {
   id: string;
@@ -30,86 +32,109 @@ export const Trainer = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const {
+    users,
+    currentUser,
+    loading,
+    error,
+    getAll,
+    getById,
+    getByRole,
+    getMyInfo,
+    register,
+    clear,
+  } = useUser();
+
+  useEffect(() => {
+    // Gọi API getByRole khi load page
+    getByRole("COACH");
+
+    getMyInfo();
+
+    console.log("Coach", users);
+    //console.log(currentUser);
+  }, []);
+
   const initialData: TrainerData[] = [
     {
-      id: '1',
-      trainerName: 'John Doe',
-      age: '35',
-      contractPeriod: '2023-2026',
-      seniority: '5 years',
+      id: "1",
+      trainerName: "John Doe",
+      age: "35",
+      contractPeriod: "2023-2026",
+      seniority: "5 years",
     },
     {
-      id: '2',
-      trainerName: 'Jane Smith',
-      age: '29',
-      contractPeriod: '2022-2025',
-      seniority: '3 years',
+      id: "2",
+      trainerName: "Jane Smith",
+      age: "29",
+      contractPeriod: "2022-2025",
+      seniority: "3 years",
     },
     {
-      id: '3',
-      trainerName: 'Alice Johnson',
-      age: '40',
-      contractPeriod: '2021-2024',
-      seniority: '10 years',
+      id: "3",
+      trainerName: "Alice Johnson",
+      age: "40",
+      contractPeriod: "2021-2024",
+      seniority: "10 years",
     },
     {
-      id: '4',
-      trainerName: 'Bob Williams',
-      age: '32',
-      contractPeriod: '2024-2027',
-      seniority: '4 years',
+      id: "4",
+      trainerName: "Bob Williams",
+      age: "32",
+      contractPeriod: "2024-2027",
+      seniority: "4 years",
     },
     {
-      id: '5',
-      trainerName: 'Eva Brown',
-      age: '27',
-      contractPeriod: '2023-2026',
-      seniority: '2 years',
+      id: "5",
+      trainerName: "Eva Brown",
+      age: "27",
+      contractPeriod: "2023-2026",
+      seniority: "2 years",
     },
     {
-      id: '6',
-      trainerName: 'Chris Green',
-      age: '45',
-      contractPeriod: '2020-2023',
-      seniority: '15 years',
+      id: "6",
+      trainerName: "Chris Green",
+      age: "45",
+      contractPeriod: "2020-2023",
+      seniority: "15 years",
     },
     {
-      id: '7',
-      trainerName: 'Diana Prince',
-      age: '30',
-      contractPeriod: '2023-2026',
-      seniority: '6 years',
+      id: "7",
+      trainerName: "Diana Prince",
+      age: "30",
+      contractPeriod: "2023-2026",
+      seniority: "6 years",
     },
     {
-      id: '8',
-      trainerName: 'Tony Stark',
-      age: '38',
-      contractPeriod: '2022-2025',
-      seniority: '12 years',
+      id: "8",
+      trainerName: "Tony Stark",
+      age: "38",
+      contractPeriod: "2022-2025",
+      seniority: "12 years",
     },
     {
-      id: '9',
-      trainerName: 'Bruce Wayne',
-      age: '41',
-      contractPeriod: '2021-2024',
-      seniority: '8 years',
+      id: "9",
+      trainerName: "Bruce Wayne",
+      age: "41",
+      contractPeriod: "2021-2024",
+      seniority: "8 years",
     },
     {
-      id: '10',
-      trainerName: 'Clark Kent',
-      age: '36',
-      contractPeriod: '2023-2026',
-      seniority: '7 years',
+      id: "10",
+      trainerName: "Clark Kent",
+      age: "36",
+      contractPeriod: "2023-2026",
+      seniority: "7 years",
     },
   ];
 
   const [data, setData] = useState<TrainerData[]>(initialData);
   const [selected, setSelected] = useState<string[]>([]);
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [order, setOrder] = useState<"asc" | "desc">("asc");
 
   const handleSelect = (id: string) => {
     setSelected((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
@@ -118,14 +143,14 @@ export const Trainer = () => {
   };
 
   const handleSort = () => {
-    const isAsc = order === 'asc';
+    const isAsc = order === "asc";
     const sorted = [...data].sort((a, b) =>
       isAsc
         ? a.trainerName.localeCompare(b.trainerName)
-        : b.trainerName.localeCompare(a.trainerName),
+        : b.trainerName.localeCompare(a.trainerName)
     );
     setData(sorted);
-    setOrder(isAsc ? 'desc' : 'asc');
+    setOrder(isAsc ? "desc" : "asc");
   };
 
   const handleDeleteSelected = () => {
@@ -138,7 +163,7 @@ export const Trainer = () => {
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // reset về page đầu
@@ -149,7 +174,7 @@ export const Trainer = () => {
       <div className={styles.topSection}>
         <div className={styles.leftSection}>
           <span className={styles.title}>
-            <Text type="Headline 1">{t('trainerManagement')}</Text>
+            <Text type="Headline 1">{t("trainerManagement")}</Text>
           </span>
         </div>
         <div className={styles.rightSection}>
@@ -165,7 +190,7 @@ export const Trainer = () => {
               <Button
                 icon={<DeleteOutlined />}
                 danger
-                className={`${selected.length === 0 ? styles.hideDelete : ''}`}
+                className={`${selected.length === 0 ? styles.hideDelete : ""}`}
               >
                 Delete ({selected.length})
               </Button>
@@ -239,7 +264,7 @@ export const Trainer = () => {
                       title="Are you sure you want to delete?"
                       onConfirm={() =>
                         setData((prev) =>
-                          prev.filter((item) => item.id !== row.id),
+                          prev.filter((item) => item.id !== row.id)
                         )
                       }
                     >

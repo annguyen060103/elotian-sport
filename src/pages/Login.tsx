@@ -1,12 +1,13 @@
-import styles from './Login.module.scss';
-import { message, Form, FormProps } from 'antd';
-import { useTranslation } from 'react-i18next';
-import { Controller, useForm } from 'react-hook-form';
-import elotian_green_logo from '@/assets/images/elotian_green_logo.svg';
-import { Input } from '@/components/Input';
-import { Button } from '@/components/Button';
-// import api from '@/api/posts';
-import axios from 'axios';
+import { Controller, useForm } from "react-hook-form";
+import { Form, FormProps, message } from "antd";
+
+import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
+import { Navigate } from "react-router-dom";
+import elotian_green_logo from "@/assets/images/elotian_green_logo.svg";
+import styles from "./Login.module.scss";
+import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 type LoginFormData = {
   email: string;
@@ -15,6 +16,7 @@ type LoginFormData = {
 
 export const Login = () => {
   const { t } = useTranslation();
+  const { login, loading, error, isAuthenticated } = useAuth();
 
   const {
     handleSubmit,
@@ -23,39 +25,16 @@ export const Login = () => {
     setValue,
   } = useForm<LoginFormData>();
 
-  const onFinish = (values: Record<string, string>) => {
-    console.log('Success:', values);
-    message.success(`Welcome, ${values.username}!`);
-  };
-
-  const onFinishFailed: FormProps['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-    message.error('Login failed. Please check your input.');
-  };
-
-  const data = JSON.stringify({
-    username: 'admin',
-    password: 'admin',
-  });
-
-  const config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: 'https://gym-crm.lehaitien.site/auth/token',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: data,
-  };
-
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log(error);
+  const onSubmit = (values: LoginFormData) => {
+    login(values.email, values.password, () => {
+      message.success("🎉 Đăng nhập thành công!");
     });
+  };
+
+  const onFinishFailed: FormProps["onFinishFailed"] = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+    message.error("Login failed. Please check your input.");
+  };
 
   return (
     <div className={styles.container}>
@@ -66,20 +45,20 @@ export const Login = () => {
       />
       <Form
         layout="vertical"
-        onFinish={handleSubmit(onFinish)}
+        onFinish={handleSubmit(onSubmit)}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Controller
           control={control}
-          rules={{ required: t('emailRequired') }}
+          rules={{ required: t("emailRequired") }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
               className={styles.emailAndPassword}
-              label={t('email')}
-              placeholder={t('emailPlaceholder')}
+              label={t("email")}
+              placeholder={t("emailPlaceholder")}
               type="email"
-              onClear={() => setValue('email', '')}
+              onClear={() => setValue("email", "")}
               error={errors.email?.message}
               onBlur={onBlur}
               onChange={onChange}
@@ -90,14 +69,14 @@ export const Login = () => {
         />
         <Controller
           control={control}
-          rules={{ required: t('passwordRequired') }}
+          rules={{ required: t("passwordRequired") }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
               className={styles.emailAndPassword}
-              label={t('password')}
-              placeholder={t('passwordPlaceholder')}
+              label={t("password")}
+              placeholder={t("passwordPlaceholder")}
               type="password"
-              onClear={() => setValue('password', '')}
+              onClear={() => setValue("password", "")}
               error={errors.password?.message}
               onBlur={onBlur}
               onChange={onChange}
@@ -107,13 +86,15 @@ export const Login = () => {
           name="password"
         />
         <div className={styles.forgot}>
-          <a href="/forgot-password">{t('forgotPassword')}</a>
+          <a href="/forgot-password">{t("forgotPassword")}</a>
         </div>
         <Button
-          title={t('login')}
+          title={loading ? t("loggingIn") : t("login")}
           className={styles.signIn}
-          onClick={handleSubmit(onFinish)}
-        />{' '}
+          onClick={handleSubmit(onSubmit)}
+          disabled={loading}
+        />
+        {error && <p style={{ color: "red", marginTop: "8px" }}>{error}</p>}
       </Form>
     </div>
   );

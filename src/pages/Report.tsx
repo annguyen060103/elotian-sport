@@ -1,21 +1,23 @@
-import { useTranslation } from 'react-i18next';
-import styles from './Report.module.scss';
-import { Text } from '@/components/Text';
-import { Button, Popconfirm } from 'antd';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Popconfirm } from "antd";
 import {
+  Checkbox,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Checkbox,
-  Paper,
-  TableSortLabel,
   TablePagination,
-} from '@mui/material';
-import { useState } from 'react';
+  TableRow,
+  TableSortLabel,
+} from "@mui/material";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+
+import { Text } from "@/components/Text";
+import styles from "./Report.module.scss";
+import { usePayment } from "@/hooks/usePayment";
+import { useTranslation } from "react-i18next";
 
 interface EquipmentData {
   id: string;
@@ -29,76 +31,94 @@ export const Equipment = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const {
+    payments,
+    currentPayment,
+    loading,
+    error,
+    getPaymentsByUserId,
+    getPaymentByTransactionId,
+    getPaymentsByStatus,
+    createPayment,
+    clear,
+  } = usePayment();
+
+  useEffect(() => {
+    getPaymentsByStatus("PAID");
+    console.log("Payment: ", payments);
+    return () => {};
+  }, []);
+
   const initialData: EquipmentData[] = [
     {
-      id: '1',
-      equipmentName: 'John Doe',
-      purchaseDate: '35',
-      condition: '2023-2026',
+      id: "1",
+      equipmentName: "John Doe",
+      purchaseDate: "35",
+      condition: "2023-2026",
     },
     {
-      id: '2',
-      equipmentName: 'Jane Smith',
-      purchaseDate: '29',
-      condition: '2022-2025',
+      id: "2",
+      equipmentName: "Jane Smith",
+      purchaseDate: "29",
+      condition: "2022-2025",
     },
     {
-      id: '3',
-      equipmentName: 'Alice Johnson',
-      purchaseDate: '40',
-      condition: '2021-2024',
+      id: "3",
+      equipmentName: "Alice Johnson",
+      purchaseDate: "40",
+      condition: "2021-2024",
     },
     {
-      id: '4',
-      equipmentName: 'Bob Williams',
-      purchaseDate: '32',
-      condition: '2024-2027',
+      id: "4",
+      equipmentName: "Bob Williams",
+      purchaseDate: "32",
+      condition: "2024-2027",
     },
     {
-      id: '5',
-      equipmentName: 'Eva Brown',
-      purchaseDate: '27',
-      condition: '2023-2026',
+      id: "5",
+      equipmentName: "Eva Brown",
+      purchaseDate: "27",
+      condition: "2023-2026",
     },
     {
-      id: '6',
-      equipmentName: 'Chris Green',
-      purchaseDate: '45',
-      condition: '2020-2023',
+      id: "6",
+      equipmentName: "Chris Green",
+      purchaseDate: "45",
+      condition: "2020-2023",
     },
     {
-      id: '7',
-      equipmentName: 'Diana Prince',
-      purchaseDate: '30',
-      condition: '2023-2026',
+      id: "7",
+      equipmentName: "Diana Prince",
+      purchaseDate: "30",
+      condition: "2023-2026",
     },
     {
-      id: '8',
-      equipmentName: 'Tony Stark',
-      purchaseDate: '38',
-      condition: '2022-2025',
+      id: "8",
+      equipmentName: "Tony Stark",
+      purchaseDate: "38",
+      condition: "2022-2025",
     },
     {
-      id: '9',
-      equipmentName: 'Bruce Wayne',
-      purchaseDate: '41',
-      condition: '2021-2024',
+      id: "9",
+      equipmentName: "Bruce Wayne",
+      purchaseDate: "41",
+      condition: "2021-2024",
     },
     {
-      id: '10',
-      equipmentName: 'Clark Kent',
-      purchaseDate: '36',
-      condition: '2023-2026',
+      id: "10",
+      equipmentName: "Clark Kent",
+      purchaseDate: "36",
+      condition: "2023-2026",
     },
   ];
 
   const [data, setData] = useState<EquipmentData[]>(initialData);
   const [selected, setSelected] = useState<string[]>([]);
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [order, setOrder] = useState<"asc" | "desc">("asc");
 
   const handleSelect = (id: string) => {
     setSelected((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
@@ -107,14 +127,14 @@ export const Equipment = () => {
   };
 
   const handleSort = () => {
-    const isAsc = order === 'asc';
+    const isAsc = order === "asc";
     const sorted = [...data].sort((a, b) =>
       isAsc
         ? a.equipmentName.localeCompare(b.equipmentName)
-        : b.equipmentName.localeCompare(a.equipmentName),
+        : b.equipmentName.localeCompare(a.equipmentName)
     );
     setData(sorted);
-    setOrder(isAsc ? 'desc' : 'asc');
+    setOrder(isAsc ? "desc" : "asc");
   };
 
   const handleDeleteSelected = () => {
@@ -127,7 +147,7 @@ export const Equipment = () => {
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // reset về page đầu
@@ -138,7 +158,7 @@ export const Equipment = () => {
       <div className={styles.topSection}>
         <div className={styles.leftSection}>
           <span className={styles.title}>
-            <Text type="Headline 1">{t('equipmentManagement')}</Text>
+            <Text type="Headline 1">{t("equipmentManagement")}</Text>
           </span>
         </div>
         <div className={styles.rightSection}>
@@ -154,7 +174,7 @@ export const Equipment = () => {
               <Button
                 icon={<DeleteOutlined />}
                 danger
-                className={`${selected.length === 0 ? styles.hideDelete : ''}`}
+                className={`${selected.length === 0 ? styles.hideDelete : ""}`}
               >
                 Delete ({selected.length})
               </Button>
@@ -219,7 +239,7 @@ export const Equipment = () => {
                       title="Are you sure you want to delete?"
                       onConfirm={() =>
                         setData((prev) =>
-                          prev.filter((item) => item.id !== row.id),
+                          prev.filter((item) => item.id !== row.id)
                         )
                       }
                     >

@@ -1,21 +1,23 @@
-import { useTranslation } from 'react-i18next';
-import styles from './Student.module.scss';
-import { Text } from '@/components/Text';
-import { Button, Popconfirm } from 'antd';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Popconfirm } from "antd";
 import {
+  Checkbox,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Checkbox,
-  Paper,
-  TableSortLabel,
   TablePagination,
-} from '@mui/material';
-import { useState } from 'react';
+  TableRow,
+  TableSortLabel,
+} from "@mui/material";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+
+import { Text } from "@/components/Text";
+import styles from "./Student.module.scss";
+import { useTranslation } from "react-i18next";
+import { useUser } from "@/hooks/useUser";
 
 interface StudentData {
   id: string;
@@ -29,76 +31,99 @@ export const Student = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const {
+    users,
+    currentUser,
+    loading,
+    error,
+    getAll,
+    getById,
+    getByRole,
+    getMyInfo,
+    register,
+    clear,
+  } = useUser();
+
+  useEffect(() => {
+    // Gọi API getByRole khi load page
+    getByRole("CLIENT");
+
+    getMyInfo();
+
+    console.log("Student", users);
+    console.log(currentUser);
+  }, []);
+
   const initialData: StudentData[] = [
     {
-      id: '1',
-      studentName: 'React Basic',
-      age: 'Monday - Wednesday',
-      seniority: 'July 2025',
+      id: "1",
+      studentName: "React Basic",
+      age: "Monday - Wednesday",
+      seniority: "July 2025",
     },
     {
-      id: '2',
-      studentName: 'Node.js Advanced',
-      age: 'Tuesday - Thursday',
-      seniority: 'August 2025',
+      id: "2",
+      studentName: "Node.js Advanced",
+      age: "Tuesday - Thursday",
+      seniority: "August 2025",
     },
     {
-      id: '3',
-      studentName: 'Python for Data Science',
-      age: 'Weekend',
-      seniority: 'September 2025',
+      id: "3",
+      studentName: "Python for Data Science",
+      age: "Weekend",
+      seniority: "September 2025",
     },
     {
-      id: '4',
-      studentName: 'UI/UX Design',
-      age: 'Tuesday - Thursday',
-      seniority: 'November 2025',
+      id: "4",
+      studentName: "UI/UX Design",
+      age: "Tuesday - Thursday",
+      seniority: "November 2025",
     },
     {
-      id: '5',
-      studentName: 'Mobile App Development',
-      age: 'Tuesday - Saturday',
-      seniority: 'March 2026',
+      id: "5",
+      studentName: "Mobile App Development",
+      age: "Tuesday - Saturday",
+      seniority: "March 2026",
     },
     {
-      id: '6',
-      studentName: 'Kubernetes Administration',
-      age: 'Wednesday - Friday',
-      seniority: 'May 2026',
+      id: "6",
+      studentName: "Kubernetes Administration",
+      age: "Wednesday - Friday",
+      seniority: "May 2026",
     },
     {
-      id: '7',
-      studentName: 'Blockchain Fundamentals',
-      age: 'Monday - Thursday',
-      seniority: 'June 2026',
+      id: "7",
+      studentName: "Blockchain Fundamentals",
+      age: "Monday - Thursday",
+      seniority: "June 2026",
     },
     {
-      id: '8',
-      studentName: 'Java Spring Boot',
-      age: 'Weekend',
-      seniority: 'July 2026',
+      id: "8",
+      studentName: "Java Spring Boot",
+      age: "Weekend",
+      seniority: "July 2026",
     },
     {
-      id: '9',
-      studentName: 'AWS Cloud Practitioner',
-      age: 'Monday - Wednesday',
-      seniority: 'August 2026',
+      id: "9",
+      studentName: "AWS Cloud Practitioner",
+      age: "Monday - Wednesday",
+      seniority: "August 2026",
     },
     {
-      id: '10',
-      studentName: 'Data Visualization with D3.js',
-      age: 'Tuesday - Friday',
-      seniority: 'September 2026',
+      id: "10",
+      studentName: "Data Visualization with D3.js",
+      age: "Tuesday - Friday",
+      seniority: "September 2026",
     },
   ];
 
   const [data, setData] = useState<StudentData[]>(initialData);
   const [selected, setSelected] = useState<string[]>([]);
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [order, setOrder] = useState<"asc" | "desc">("asc");
 
   const handleSelect = (id: string) => {
     setSelected((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
@@ -107,14 +132,14 @@ export const Student = () => {
   };
 
   const handleSort = () => {
-    const isAsc = order === 'asc';
+    const isAsc = order === "asc";
     const sorted = [...data].sort((a, b) =>
       isAsc
         ? a.studentName.localeCompare(b.studentName)
-        : b.studentName.localeCompare(a.studentName),
+        : b.studentName.localeCompare(a.studentName)
     );
     setData(sorted);
-    setOrder(isAsc ? 'desc' : 'asc');
+    setOrder(isAsc ? "desc" : "asc");
   };
 
   const handleDeleteSelected = () => {
@@ -127,7 +152,7 @@ export const Student = () => {
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // reset về page đầu
@@ -138,7 +163,7 @@ export const Student = () => {
       <div className={styles.topSection}>
         <div className={styles.leftSection}>
           <span className={styles.title}>
-            <Text type="Headline 1">{t('studentManagement')}</Text>
+            <Text type="Headline 1">{t("studentManagement")}</Text>
           </span>
         </div>
         <div className={styles.rightSection}>
@@ -154,7 +179,7 @@ export const Student = () => {
               <Button
                 icon={<DeleteOutlined />}
                 danger
-                className={`${selected.length === 0 ? styles.hideDelete : ''}`}
+                className={`${selected.length === 0 ? styles.hideDelete : ""}`}
               >
                 Delete ({selected.length})
               </Button>
@@ -223,7 +248,7 @@ export const Student = () => {
                       title="Are you sure you want to delete?"
                       onConfirm={() =>
                         setData((prev) =>
-                          prev.filter((item) => item.id !== row.id),
+                          prev.filter((item) => item.id !== row.id)
                         )
                       }
                     >
