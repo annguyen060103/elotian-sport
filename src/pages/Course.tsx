@@ -64,16 +64,16 @@ export const Course = () => {
 
   useEffect(() => {
     getAllBranches();
-    getBranchById(branches[0].branchId);
+    //getBranchById(branches[0].branchId);
     console.log("Branchs", branches);
-    console.log("This branch", currentBranch.branchId);
+    //console.log("This branch", currentBranch.branchId);
 
     return () => {};
   }, []);
 
   useEffect(() => {
-    getAllFacilities();
-    console.log("facilities", facilities);
+    // getAllFacilities();
+    //console.log("facilities", facilities);
 
     return () => {};
   }, []);

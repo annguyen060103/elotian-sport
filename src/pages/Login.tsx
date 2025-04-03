@@ -1,9 +1,9 @@
 import { Controller, useForm } from "react-hook-form";
 import { Form, FormProps, message } from "antd";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { Navigate } from "react-router-dom";
 import elotian_green_logo from "@/assets/images/elotian_green_logo.svg";
 import styles from "./Login.module.scss";
 import { useAuth } from "@/hooks/useAuth";
@@ -17,6 +17,7 @@ type LoginFormData = {
 export const Login = () => {
   const { t } = useTranslation();
   const { login, loading, error, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -27,7 +28,8 @@ export const Login = () => {
 
   const onSubmit = (values: LoginFormData) => {
     login(values.email, values.password, () => {
-      message.success("🎉 Đăng nhập thành công!");
+      message.success("Đăng nhập thành công!");
+      navigate("/");
     });
   };
 
