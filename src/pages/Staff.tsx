@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './Staff.module.scss';
 import { Text } from '@/components/Text';
 import { Button, Popconfirm } from 'antd';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
 import {
   Table,
   TableBody,
@@ -16,6 +16,8 @@ import {
   TablePagination,
 } from '@mui/material';
 import { useState } from 'react';
+import plus from '@/assets/icons/plus.svg';
+import { Button as CustomButton } from '@/components/Button';
 
 interface TrainerData {
   id: string;
@@ -141,36 +143,26 @@ export const Staff = () => {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // reset về page đầu
+    setPage(0);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.topSection}>
-        <div className={styles.leftSection}>
-          <span className={styles.title}>
-            <Text type="Headline 1">{t('staffManagement')}</Text>
-          </span>
-        </div>
-        <div className={styles.rightSection}>
-          <Button
-            icon={<PlusOutlined />}
-            className={styles.addNewButton}
-          ></Button>
-          <div className={styles.deleteButtonWrapper}>
+        <span className={styles.title}>
+          <Text type="Headline 1">{t('staffManagement')}</Text>
+        </span>
+        <div className={styles.deleteButtonWrapper}>
+          {selected.length > 0 && (
             <Popconfirm
               title="Are you sure you want to delete?"
               onConfirm={handleDeleteSelected}
             >
-              <Button
-                icon={<DeleteOutlined />}
-                danger
-                className={`${selected.length === 0 ? styles.hideDelete : ''}`}
-              >
+              <Button icon={<DeleteOutlined />} danger>
                 Delete ({selected.length})
               </Button>
             </Popconfirm>
-          </div>
+          )}
         </div>
       </div>
       <TableContainer component={Paper} className={styles.table}>
@@ -188,10 +180,7 @@ export const Staff = () => {
               </TableCell>
               <TableCell>
                 <TableSortLabel active direction={order} onClick={handleSort}>
-                  <Text
-                    className={styles.staffNameText}
-                    type="Caption 1 Bold"
-                  >
+                  <Text className={styles.staffNameText} type="Caption 1 Bold">
                     Staff name
                   </Text>
                 </TableSortLabel>
@@ -250,6 +239,14 @@ export const Staff = () => {
               ))}
           </TableBody>
         </Table>
+        <div className={styles.addNewContainer}>
+          <CustomButton
+            className={styles.addNewButton}
+            type="primary"
+            title={t('addNew')}
+            icon={<img src={plus} />}
+          />
+        </div>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[5, 10, 20]}
