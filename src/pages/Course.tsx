@@ -1,4 +1,4 @@
-import { Button, Popconfirm } from "antd";
+import { Button, Popconfirm } from 'antd';
 import {
   Checkbox,
   Paper,
@@ -10,15 +10,17 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-} from "@mui/material";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+} from '@mui/material';
+import { DeleteOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 
-import { Text } from "@/components/Text";
-import styles from "./Course.module.scss";
-import { useBranch } from "@/hooks/useBranch";
-import { useFacility } from "@/hooks/useFacility";
-import { useTranslation } from "react-i18next";
+import { Text } from '@/components/Text';
+import styles from './Course.module.scss';
+import { useBranch } from '@/hooks/useBranch';
+import { useFacility } from '@/hooks/useFacility';
+import { useTranslation } from 'react-i18next';
+import plus from '@/assets/icons/plus.svg';
+import { Button as CustomButton } from '@/components/Button';
 
 interface CourseData {
   id: string;
@@ -65,7 +67,7 @@ export const Course = () => {
   useEffect(() => {
     getAllBranches();
     //getBranchById(branches[0].branchId);
-    console.log("Branchs", branches);
+    console.log('Branchs', branches);
     //console.log("This branch", currentBranch.branchId);
 
     return () => {};
@@ -80,90 +82,90 @@ export const Course = () => {
 
   useEffect(() => {
     getFacilitiesByBranch(currentBranch.branchId);
-    console.log("facilites of branch", facilities);
+    console.log('facilites of branch', facilities);
     return () => {};
   }, []);
 
   const initialData: CourseData[] = [
     {
-      id: "1",
-      courseName: "React Basic",
-      timetable: "Monday - Wednesday",
-      schedule: "July 2025",
-      trainerName: "John Doe",
+      id: '1',
+      courseName: 'React Basic',
+      timetable: 'Monday - Wednesday',
+      schedule: 'July 2025',
+      trainerName: 'John Doe',
     },
     {
-      id: "2",
-      courseName: "Node.js Advanced",
-      timetable: "Tuesday - Thursday",
-      schedule: "August 2025",
-      trainerName: "Jane Smith",
+      id: '2',
+      courseName: 'Node.js Advanced',
+      timetable: 'Tuesday - Thursday',
+      schedule: 'August 2025',
+      trainerName: 'Jane Smith',
     },
     {
-      id: "3",
-      courseName: "Python for Data Science",
-      timetable: "Weekend",
-      schedule: "September 2025",
-      trainerName: "Alice Johnson",
+      id: '3',
+      courseName: 'Python for Data Science',
+      timetable: 'Weekend',
+      schedule: 'September 2025',
+      trainerName: 'Alice Johnson',
     },
     {
-      id: "4",
-      courseName: "UI/UX Design",
-      timetable: "Tuesday - Thursday",
-      schedule: "November 2025",
-      trainerName: "Eva Brown",
+      id: '4',
+      courseName: 'UI/UX Design',
+      timetable: 'Tuesday - Thursday',
+      schedule: 'November 2025',
+      trainerName: 'Eva Brown',
     },
     {
-      id: "5",
-      courseName: "Mobile App Development",
-      timetable: "Tuesday - Saturday",
-      schedule: "March 2026",
-      trainerName: "Bruce Wayne",
+      id: '5',
+      courseName: 'Mobile App Development',
+      timetable: 'Tuesday - Saturday',
+      schedule: 'March 2026',
+      trainerName: 'Bruce Wayne',
     },
     {
-      id: "6",
-      courseName: "Kubernetes Administration",
-      timetable: "Wednesday - Friday",
-      schedule: "May 2026",
-      trainerName: "Peter Parker",
+      id: '6',
+      courseName: 'Kubernetes Administration',
+      timetable: 'Wednesday - Friday',
+      schedule: 'May 2026',
+      trainerName: 'Peter Parker',
     },
     {
-      id: "7",
-      courseName: "Blockchain Fundamentals",
-      timetable: "Monday - Thursday",
-      schedule: "June 2026",
-      trainerName: "Natasha Romanoff",
+      id: '7',
+      courseName: 'Blockchain Fundamentals',
+      timetable: 'Monday - Thursday',
+      schedule: 'June 2026',
+      trainerName: 'Natasha Romanoff',
     },
     {
-      id: "8",
-      courseName: "Java Spring Boot",
-      timetable: "Weekend",
-      schedule: "July 2026",
-      trainerName: "Stephen Strange",
+      id: '8',
+      courseName: 'Java Spring Boot',
+      timetable: 'Weekend',
+      schedule: 'July 2026',
+      trainerName: 'Stephen Strange',
     },
     {
-      id: "9",
-      courseName: "AWS Cloud Practitioner",
-      timetable: "Monday - Wednesday",
-      schedule: "August 2026",
-      trainerName: "Steve Rogers",
+      id: '9',
+      courseName: 'AWS Cloud Practitioner',
+      timetable: 'Monday - Wednesday',
+      schedule: 'August 2026',
+      trainerName: 'Steve Rogers',
     },
     {
-      id: "10",
-      courseName: "Data Visualization with D3.js",
-      timetable: "Tuesday - Friday",
-      schedule: "September 2026",
-      trainerName: "Wanda Maximoff",
+      id: '10',
+      courseName: 'Data Visualization with D3.js',
+      timetable: 'Tuesday - Friday',
+      schedule: 'September 2026',
+      trainerName: 'Wanda Maximoff',
     },
   ];
 
   const [data, setData] = useState<CourseData[]>(initialData);
   const [selected, setSelected] = useState<string[]>([]);
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
 
   const handleSelect = (id: string) => {
     setSelected((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
 
@@ -172,14 +174,14 @@ export const Course = () => {
   };
 
   const handleSort = () => {
-    const isAsc = order === "asc";
+    const isAsc = order === 'asc';
     const sorted = [...data].sort((a, b) =>
       isAsc
         ? a.courseName.localeCompare(b.courseName)
-        : b.courseName.localeCompare(a.courseName)
+        : b.courseName.localeCompare(a.courseName),
     );
     setData(sorted);
-    setOrder(isAsc ? "desc" : "asc");
+    setOrder(isAsc ? 'desc' : 'asc');
   };
 
   const handleDeleteSelected = () => {
@@ -192,39 +194,29 @@ export const Course = () => {
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // reset về page đầu
+    setPage(0);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.topSection}>
-        <div className={styles.leftSection}>
-          <span className={styles.title}>
-            <Text type="Headline 1">{t("courseManagement")}</Text>
-          </span>
-        </div>
-        <div className={styles.rightSection}>
-          <Button
-            icon={<PlusOutlined />}
-            className={styles.addNewButton}
-          ></Button>
-          <div className={styles.deleteButtonWrapper}>
+        <span className={styles.title}>
+          <Text type="Headline 1">{t('courseManagement')}</Text>
+        </span>
+        <div className={styles.deleteButtonWrapper}>
+          {selected.length > 0 && (
             <Popconfirm
               title="Are you sure you want to delete?"
               onConfirm={handleDeleteSelected}
             >
-              <Button
-                icon={<DeleteOutlined />}
-                danger
-                className={`${selected.length === 0 ? styles.hideDelete : ""}`}
-              >
+              <Button icon={<DeleteOutlined />} danger>
                 Delete ({selected.length})
               </Button>
             </Popconfirm>
-          </div>
+          )}
         </div>
       </div>
       <TableContainer component={Paper} className={styles.table}>
@@ -290,7 +282,7 @@ export const Course = () => {
                       title="Are you sure you want to delete?"
                       onConfirm={() =>
                         setData((prev) =>
-                          prev.filter((item) => item.id !== row.id)
+                          prev.filter((item) => item.id !== row.id),
                         )
                       }
                     >
@@ -301,6 +293,14 @@ export const Course = () => {
               ))}
           </TableBody>
         </Table>
+        <div className={styles.addNewContainer}>
+          <CustomButton
+            className={styles.addNewButton}
+            type="primary"
+            title={t('addNew')}
+            icon={<img src={plus} />}
+          />
+        </div>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[5, 10, 20]}
