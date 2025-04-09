@@ -13,6 +13,8 @@ import {
 } from "@/features/branch/branchSlice";
 import { useDispatch, useSelector } from "react-redux";
 
+import { Branch } from "@/interfaces/Branch";
+
 export const useBranch = () => {
     const dispatch = useDispatch<AppDispatch>();
 
@@ -27,10 +29,10 @@ export const useBranch = () => {
     const getById = (branchId: string) =>
         dispatch(fetchBranchById({ branchId, token }));
 
-    const create = (branchData: any) =>
+    const create = (branchData: Branch) =>
         dispatch(createBranchAction({ branchData, token }));
 
-    const update = (branchId: string, branchData: any) =>
+    const update = (branchId: string, branchData: Branch) =>
         dispatch(updateBranchAction({ branchId, branchData, token }));
 
     const remove = (branchId: string) =>
