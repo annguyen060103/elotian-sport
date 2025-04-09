@@ -1,5 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { introspect, login, logout, refresh } from "./authAPI";
+import {
+  introspect,
+  login,
+  logout,
+  refresh,
+  resetPassword,
+  sendOTP,
+} from "./authAPI";
 
 interface AuthState {
   accessToken: string | null;
@@ -39,6 +46,32 @@ export const introspectToken = createAsyncThunk(
   "auth/introspect",
   async (token: string) => {
     const data = await introspect(token);
+    return data;
+  }
+);
+
+export const sendOTPThunk = createAsyncThunk(
+  "auth/sendOTP",
+  async ({ username, email }: { username: string; email: string }) => {
+    const data = await sendOTP(username, email);
+    return data;
+  }
+);
+
+export const resetPasswordThunk = createAsyncThunk(
+  "auth/resetPassword",
+  async ({
+    username,
+    email,
+    otp,
+    newPassword,
+  }: {
+    username: string;
+    email: string;
+    otp: string;
+    newPassword: string;
+  }) => {
+    const data = await resetPassword(username, email, otp, newPassword);
     return data;
   }
 );

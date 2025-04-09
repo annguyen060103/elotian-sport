@@ -23,16 +23,22 @@ export const useBranch = () => {
     const token = auth.accessToken;
 
     const getAll = () => dispatch(fetchAllBranches(token));
+
     const getById = (branchId: string) =>
         dispatch(fetchBranchById({ branchId, token }));
+
     const create = (branchData: any) =>
         dispatch(createBranchAction({ branchData, token }));
+
     const update = (branchId: string, branchData: any) =>
         dispatch(updateBranchAction({ branchId, branchData, token }));
+
     const remove = (branchId: string) =>
         dispatch(deleteBranchAction({ branchId, token }));
+
     const addUser = (branchId: string, userId: string) =>
         dispatch(addUserToBranchAction({ branchId, userId, token }));
+
     const removeUser = (branchId: string, userId: string) =>
         dispatch(removeUserFromBranchAction({ branchId, userId, token }));
 

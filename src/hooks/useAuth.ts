@@ -1,7 +1,7 @@
 // src/hooks/useAuth.ts
 
 import type { AppDispatch, RootState } from '../app/store';
-import { clearAuth, loginUser, logoutUser } from '../features/auth/authSlice';
+import { clearAuth, loginUser, logoutUser, resetPasswordThunk, sendOTPThunk } from '../features/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TOKEN_KEY } from '../constants/env';
@@ -37,6 +37,35 @@ export const useAuth = () => {
         sessionStorage.removeItem(TOKEN_KEY);
     };
 
+    const sendOTP = (username: string, email: string, onSuccess?: () => void) => {
+        dispatch(sendOTPThunk({ username, email }))
+            .unwrap()
+            .then(() => {
+                console.log("OTP sent to email");
+                if (onSuccess) onSuccess();
+            })
+            .catch((err) => {
+                console.error("OTP Send Failed:", err);
+            });
+    };
+
+    const resetPassword = (
+        username: string,
+        email: string,
+        otp: string,
+        newPassword: string,
+        onSuccess?: () => void
+    ) => {
+        dispatch(resetPasswordThunk({ username, email, otp, newPassword }))
+            .unwrap()
+            .then(() => {
+                console.log("Password reset successfully");
+                if (onSuccess) onSuccess();
+            })
+            .catch((err) => {
+                console.error("Password reset failed:", err);
+            });
+    };
 
     useEffect(() => {
         const token = sessionStorage.getItem(TOKEN_KEY);
@@ -50,5 +79,7 @@ export const useAuth = () => {
         ...auth,
         login,
         logout,
+        sendOTP,
+        resetPassword,
     };
 };

@@ -12,6 +12,8 @@ import {
 } from "@/features/facility/facilitySlice";
 import { useDispatch, useSelector } from "react-redux";
 
+import { Facility } from "@/interfaces/Facility";
+
 export const useFacility = () => {
     const dispatch = useDispatch<AppDispatch>();
 
@@ -26,9 +28,9 @@ export const useFacility = () => {
         dispatch(fetchFacilityById({ facilityId, token }));
     const getByBranch = (branchId: string) =>
         dispatch(fetchFacilitiesByBranch({ branchId, token }));
-    const create = (branchId: string, facilityData: any) =>
+    const create = (branchId: string, facilityData: Facility) =>
         dispatch(createFacilityAction({ branchId, facilityData, token }));
-    const update = (facilityId: string, facilityData: any) =>
+    const update = (facilityId: string, facilityData: Facility) =>
         dispatch(updateFacilityAction({ facilityId, facilityData, token }));
     const remove = (facilityId: string) =>
         dispatch(deleteFacilityAction({ facilityId, token }));
