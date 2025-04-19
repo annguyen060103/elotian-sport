@@ -66,7 +66,7 @@ export const Course = () => {
 
   useEffect(() => {
     getAllBranches();
-    //getBranchById(branches[0].branchId);
+    // getBranchById(branches[0].branchId);
     console.log('Branchs', branches);
     //console.log("This branch", currentBranch.branchId);
 
