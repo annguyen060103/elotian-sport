@@ -45,3 +45,29 @@
 .addNewButton {
   text-align: center;
 }
+
+.modal {
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.userActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+
+  > img {
+    margin-left: 16px;
+    cursor: pointer;
+  }
+}

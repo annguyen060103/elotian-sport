@@ -80,11 +80,11 @@ export const Course = () => {
     return () => {};
   }, []);
 
-  useEffect(() => {
-    getFacilitiesByBranch(currentBranch.branchId);
-    console.log('facilites of branch', facilities);
-    return () => {};
-  }, []);
+  // useEffect(() => {
+  //   getFacilitiesByBranch(currentBranch.branchId);
+  //   console.log('facilites of branch', facilities);
+  //   return () => {};
+  // }, []);
 
   const initialData: CourseData[] = [
     {

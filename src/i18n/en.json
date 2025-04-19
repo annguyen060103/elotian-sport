@@ -27,5 +27,13 @@
   "reportManagement": "Reports management",
   "token": "Token",
   "tokenManagement": "Tokens management",
-  "loginSuccess": "Login successfully"
+  "loginSuccess": "Login successfully",
+  "createNewTrainer": "Create new trainer",
+  "editTrainer": "Edit trainer",
+  "trainerImage": "Trainer image",
+  "trainerName": "Trainer name",
+  "trainerNameRequired": "Trainer name is required",
+  "trainerNamePlaceHolder": "Enter your name",
+  "save": "Save",
+  "cancel": "Cancel"
 }
