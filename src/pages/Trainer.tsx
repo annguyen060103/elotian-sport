@@ -1,4 +1,4 @@
-import { Button, Modal, Popconfirm, Select } from 'antd';
+import { Button, Modal, Popconfirm } from 'antd';
 import {
   Checkbox,
   Paper,
@@ -21,8 +21,8 @@ import { useUser } from '@/hooks/useUser';
 import plus from '@/assets/icons/plus.svg';
 import edit from '@/assets/icons/edit.png';
 import { Button as CustomButton } from '@/components/Button';
-import { ImageUpload, Input } from '@/components/Input';
-import { Controller, useForm } from 'react-hook-form';
+import { Input } from '@/components/Input';
+import { Controller, set, useForm } from 'react-hook-form';
 import { User } from '@/interfaces/User';
 import { useBranch } from '@/hooks/useBranch';
 
@@ -40,7 +40,6 @@ export const Trainer = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [file, setFile] = useState(null);
   const [selectedTrainer, setSelectedTrainer] = useState<
     User & { id?: string }
   >();
@@ -60,6 +59,7 @@ export const Trainer = () => {
     clear,
     remove,
     registerCoachUser,
+    update,
   } = useUser();
 
   const {
@@ -95,7 +95,6 @@ export const Trainer = () => {
     console.log('Branches', branches);
 
     console.log('Coach', users);
-    // console.log(currentUser);
   }, []);
 
   useEffect(() => {
@@ -103,23 +102,23 @@ export const Trainer = () => {
     setDisplayedUsers(users);
   }, [users]);
 
-  const calculateAge = (dob: string): string => {
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age.toString();
-  };
+  // const calculateAge = (dob: string): string => {
+  //   const birthDate = new Date(dob);
+  //   const today = new Date();
+  //   let age = today.getFullYear() - birthDate.getFullYear();
+  //   const m = today.getMonth() - birthDate.getMonth();
+  //   if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+  //     age--;
+  //   }
+  //   return age.toString();
+  // };
 
   const data = displayedUsers.map((user) => ({
     id: user.userId,
     trainerName: user.fullName,
-    age: calculateAge(user.dob),
+    // age: calculateAge(user.dob),
+    age: user.dob,
     specialization: user.specialization,
-    // imageUrl: user.imageUrl,
   }));
 
   const [selected, setSelected] = useState<string[]>([]);
@@ -170,21 +169,30 @@ export const Trainer = () => {
     setPage(0);
   };
 
+  const refetch = async () => {
+    try {
+      await getByRole('COACH'); // Fetch the latest data
+      console.log('Data refetched successfully!');
+    } catch (err) {
+      console.error('Failed to refetch data:', err);
+    }
+  };
+
   const onSaveTrainer = async (trainerData: Partial<User>) => {
     try {
       const newTrainer = {
-        username: trainerData.username || 'coach_nghia2',
-        password: trainerData.password || '123456',
+        username: trainerData.username || '',
+        password: trainerData.password || '',
         email: trainerData.email,
         fullName: trainerData.fullName,
-        phone: trainerData.phone || '0987654321',
-        gender: trainerData.gender || 'Male',
-        dob: trainerData.dob || '1995-06-15',
-        cccd: trainerData.cccd || '012345678912',
-        address: trainerData.address || '123 Lê Lợi, District 1, HCM',
-        height: trainerData.height || 1.75,
-        weight: trainerData.weight || 68.5,
-        healthIssues: trainerData.healthIssues || 'None',
+        phone: trainerData.phone || '',
+        gender: trainerData.gender || '',
+        dob: trainerData.dob || '',
+        cccd: trainerData.cccd || '',
+        address: trainerData.address || '',
+        height: trainerData.height || 0,
+        weight: trainerData.weight || 0,
+        healthIssues: trainerData.healthIssues || '',
         roles: ['COACH'],
         status: 'ACTIVE',
         branchId: selectedId,
@@ -214,11 +222,8 @@ export const Trainer = () => {
         },
       ]);
 
-      // Clear form and close modal
-      setFile(null);
-      setValue('fullName', '');
-      setValue('email', '');
       setCreateModalVisible(false);
+      refetch();
     } catch (err) {
       console.error('Upload failed!', err);
     }
@@ -226,36 +231,49 @@ export const Trainer = () => {
 
   const onUpdateTrainer = async (trainerData: Partial<User>) => {
     try {
-      if (file) {
-        // Simulate deleting the old avatar and uploading a new one
-        const newImageUrl = URL.createObjectURL(file);
+      // Prepare the updated trainer data
+      const updatedTrainer = {
+        userId: selectedTrainer?.id, // Use the selected trainer's ID
+        fullName: trainerData.fullName,
+        email: trainerData.email,
+        dob: trainerData.dob,
+        specialization: trainerData.specialization,
+        status: 'ACTIVE',
+      };
 
-        // Update the trainer with the new avatar
-        await registerCoachUser({
-          fullName: trainerData.fullName,
-          email: trainerData.email,
-          imageUrl: newImageUrl,
-          status: 'ACTIVE',
-        });
-      } else {
-        // Update the trainer without changing the avatar
-        await registerCoachUser({
-          fullName: trainerData.fullName,
-          email: trainerData.email,
-          status: 'ACTIVE',
-        });
-      }
+      // Call the update function from useUser
+      await update(updatedTrainer.userId, updatedTrainer);
 
-      alert('Upload successful!');
+      alert('Trainer updated successfully!');
       setSelectedTrainer(undefined);
-      setFile(null);
       setValue('fullName', '');
       setValue('email', '');
+      setValue('dob', '');
+      setValue('specialization', '');
 
-      getByRole('COACH'); // Refresh the list of trainers
       setCreateModalVisible(false);
+      refetch();
     } catch (err) {
-      console.error(t('uploadFailed'), err);
+      console.error('Failed to update trainer:', err);
+      alert('Failed to update trainer. Please try again.');
+    }
+  };
+
+  const onDeleteTrainer = async (trainerId: string) => {
+    try {
+      // Call the remove function from useUser to delete the trainer
+      await remove(trainerId);
+
+      alert('Trainer deleted successfully!');
+
+      // Update the displayedUsers state to remove the deleted trainer
+      setDisplayedUsers((prev) =>
+        prev.filter((trainer) => trainer.userId !== trainerId),
+      );
+      refetch();
+    } catch (err) {
+      console.error('Failed to delete trainer:', err);
+      alert('Failed to delete trainer. Please try again.');
     }
   };
 
@@ -302,7 +320,7 @@ export const Trainer = () => {
                 </TableSortLabel>
               </TableCell>
               <TableCell>
-                <Text type="Caption 1 Medium">Age</Text>
+                <Text type="Caption 1 Medium">Date of birth</Text>
               </TableCell>
               <TableCell>
                 <Text type="Caption 1 Medium">Specialization</Text>
@@ -338,23 +356,55 @@ export const Trainer = () => {
                       <img
                         src={edit}
                         onClick={() => {
-                          setSelectedTrainer({
-                            ...displayedUsers.find(
-                              (user) => user.userId === row.id,
-                            ),
-                            id: row.id,
-                          });
-                          setCreateModalVisible(true);
-                          setValue('fullName', row.trainerName);
-                          setValue('dob', row.age);
-                          // setValue('imageUrl', row.imageUrl);
+                          const trainerToEdit = displayedUsers.find(
+                            (user) => user.userId === row.id,
+                          );
+
+                          if (trainerToEdit) {
+                            setSelectedTrainer({
+                              ...trainerToEdit,
+                              id: row.id,
+                            });
+                            setCreateModalVisible(true);
+
+                            // Pre-fill the form fields with the trainer's data
+                            setValue('fullName', trainerToEdit.fullName);
+                            setValue('email', trainerToEdit.email);
+                            setValue('username', trainerToEdit.username);
+                            setValue('password', trainerToEdit.password);
+                            setValue('dob', trainerToEdit.dob);
+                            setValue('cccd', trainerToEdit.cccd);
+                            setValue('height', trainerToEdit.height);
+                            setValue('weight', trainerToEdit.weight);
+                            setValue(
+                              'healthIssues',
+                              trainerToEdit.healthIssues,
+                            );
+                            setValue(
+                              'specialization',
+                              trainerToEdit.specialization,
+                            );
+                            setValue('phone', trainerToEdit.phone);
+                            setValue('gender', trainerToEdit.gender);
+                            setValue('address', trainerToEdit.address);
+                            setValue('salary', trainerToEdit.salary);
+                            setValue(
+                              'experienceYears',
+                              trainerToEdit.experienceYears,
+                            );
+                            setValue(
+                              'certifications',
+                              trainerToEdit.certifications,
+                            );
+                            setValue('branchId', trainerToEdit.branchId);
+                          }
                         }}
                       />
                       <Popconfirm
                         title="Are you sure you want to delete?"
                         onConfirm={() => {
                           console.log('ID to delete:', row.id);
-                          remove(row.id);
+                          onDeleteTrainer(row.id);
                         }}
                       >
                         <Button icon={<DeleteOutlined />} danger />
@@ -373,8 +423,7 @@ export const Trainer = () => {
             icon={<img src={plus} />}
             onClick={() => {
               setSelectedTrainer(undefined);
-              setFile(undefined);
-              setValue('fullName', '');
+              // setValue('fullName', '');
               setCreateModalVisible(true);
             }}
           />
@@ -395,11 +444,6 @@ export const Trainer = () => {
             <Text type="Headline 1">
               {selectedTrainer ? t('editTrainer') : t('createNewTrainer')}
             </Text>
-            {/* <ImageUpload
-              onSelected={setFile}
-              label={t('trainerImage')}
-              imageURL={selectedTrainer?.imageUrl}
-            /> */}
             <Controller
               control={control}
               rules={{
@@ -407,9 +451,8 @@ export const Trainer = () => {
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  className={styles.name}
                   label={t('trainerName')}
-                  placeholder={t('trainerNamePlaceHolder')}
+                  placeholder={t('trainerUsernamePlaceholder')}
                   onClear={() => setValue('fullName', '')}
                   error={errors.fullName?.message}
                   onBlur={onBlur}
@@ -419,15 +462,15 @@ export const Trainer = () => {
               )}
               name="fullName"
             />
+
             <Controller
               control={control}
               rules={{
-                required: t('emailRequired'),
+                required: t('trainerEmailRequired'),
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  className={styles.name}
-                  label={t('email')}
+                  label={t('trainerEmail')}
                   placeholder={t('emailPlaceholder')}
                   onClear={() => setValue('email', '')}
                   error={errors.email?.message}
@@ -438,49 +481,25 @@ export const Trainer = () => {
               )}
               name="email"
             />
+
             <Controller
               control={control}
               rules={{
-                required: t('emailRequired'),
+                required: t('trainerUsernameRequired'),
               }}
-              render={({ field: { onBlur } }) => (
-                <select
-                  className={styles.name}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('trainerUsername')}
+                  placeholder={t('trainerUsernamePlaceholder')}
+                  onClear={() => setValue('username', '')}
+                  error={errors.username?.message}
                   onBlur={onBlur}
-                  onChange={(e) => {
-                    setSelectedId(e.target.value);
-                  }}
-                  value={selectedId}
-                >
-                  {branches.map((branch) => (
-                    <option key={branch.branchId} value={branch.branchId}>
-                      {branch.branchName}
-                    </option>
-                  ))}
-                </select>
+                  onChange={onChange}
+                  value={value}
+                />
               )}
-              name="email"
+              name="username"
             />
-
-            {/* username: trainerData.username || 'coach_nghia2',
-        password: trainerData.password || '123456',
-        email: trainerData.email,
-        fullName: trainerData.fullName,
-        phone: trainerData.phone || '0987654321',
-        gender: trainerData.gender || 'Male',
-        dob: trainerData.dob || '1995-06-15',
-        cccd: trainerData.cccd || '012345678912',
-        address: trainerData.address || '123 Lê Lợi, District 1, HCM',
-        height: trainerData.height || 1.75,
-        weight: trainerData.weight || 68.5,
-        healthIssues: trainerData.healthIssues || 'None',
-        roles: ['COACH'],
-        status: 'ACTIVE',
-        branchId: selectedId,
-        salary: trainerData.salary || '',
-        specialization: trainerData.specialization || '',
-        experienceYears: trainerData.experienceYears || '',
-        certifications: trainerData.certifications || '', */}
 
             <Controller
               control={control}
@@ -489,7 +508,6 @@ export const Trainer = () => {
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  className={styles.name}
                   label={t('password')}
                   placeholder={t('passwordPlaceholder')}
                   onClear={() => setValue('password', '')}
@@ -505,33 +523,12 @@ export const Trainer = () => {
             <Controller
               control={control}
               rules={{
-                required: t('usernameRequired'),
+                required: t('trainerPhoneRequired'),
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  className={styles.name}
-                  label={t('username')}
-                  placeholder={t('usernamePlaceHolder')}
-                  onClear={() => setValue('username', '')}
-                  error={errors.username?.message}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  value={value}
-                />
-              )}
-              name="username"
-            />
-
-            <Controller
-              control={control}
-              rules={{
-                required: t('phoneRequired'),
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  className={styles.name}
-                  label={t('phone')}
-                  placeholder={t('phonePlaceholder')}
+                  label={t('trainerPhone')}
+                  placeholder={t('trainerPhonePlaceholder')}
                   onClear={() => setValue('phone', '')}
                   error={errors.phone?.message}
                   onBlur={onBlur}
@@ -549,7 +546,6 @@ export const Trainer = () => {
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  className={styles.name}
                   label={t('gender')}
                   placeholder={t('genderPlaceholder')}
                   onClear={() => setValue('gender', '')}
@@ -569,7 +565,6 @@ export const Trainer = () => {
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  className={styles.name}
                   label={t('dob')}
                   placeholder={t('dobPlaceholder')}
                   onClear={() => setValue('dob', '')}
@@ -580,6 +575,198 @@ export const Trainer = () => {
                 />
               )}
               name="dob"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('identificationRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('identification')}
+                  placeholder={t('identificationPlaceholder')}
+                  onClear={() => setValue('cccd', '')}
+                  error={errors.cccd?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="cccd"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('addressRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('address')}
+                  placeholder={t('addressPlaceholder')}
+                  onClear={() => setValue('address', '')}
+                  error={errors.address?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="address"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('heightRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('height')}
+                  placeholder={t('heightPlaceholder')}
+                  onClear={() => setValue('height', 0)}
+                  error={errors.height?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="height"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('weightRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('weight')}
+                  placeholder={t('weightPlaceholder')}
+                  onClear={() => setValue('weight', 0)}
+                  error={errors.weight?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="weight"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('healthIssuesRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('healthIssues')}
+                  placeholder={t('healthIssuesPlaceholder')}
+                  onClear={() => setValue('healthIssues', '')}
+                  error={errors.healthIssues?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="healthIssues"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('salaryRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('salary')}
+                  placeholder={t('salaryPlaceholder')}
+                  onClear={() => setValue('salary', 0)}
+                  error={errors.salary?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="salary"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('specializationRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('specialization')}
+                  placeholder={t('specializationPlaceholder')}
+                  onClear={() => setValue('specialization', '')}
+                  error={errors.specialization?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="specialization"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('experienceYearsRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('experienceYears')}
+                  placeholder={t('experienceYearsPlaceholder')}
+                  onClear={() => setValue('experienceYears', 0)}
+                  error={errors.experienceYears?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="experienceYears"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('certificationsRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('certifications')}
+                  placeholder={t('certificationsPlaceholder')}
+                  onClear={() => setValue('certifications', '')}
+                  error={errors.certifications?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="certifications"
+            />
+
+            <Controller
+              control={control}
+              render={({ field: { onBlur } }) => (
+                <select
+                  className={styles.select}
+                  onBlur={onBlur}
+                  onChange={(e) => {
+                    setSelectedId(e.target.value);
+                  }}
+                  value={selectedId}
+                >
+                  {branches.map((branch) => (
+                    <option key={branch.branchId} value={branch.branchId}>
+                      {branch.branchName}
+                    </option>
+                  ))}
+                </select>
+              )}
+              name="email"
             />
 
             <div className={styles.modalFooter}>

@@ -71,3 +71,28 @@
     cursor: pointer;
   }
 }
+
+.select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  color: $grey1000;
+  font-size: 14px;
+  font-family: 'Outfit';
+  font-weight: 400;
+
+  border: 1px solid $grey1000;
+  border-radius: 12px;
+  background-color: #fff;
+
+  outline: none;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &:focus {
+    border-color: #5a6af0;
+    box-shadow: 0 0 0 2px rgba(90, 106, 240, 0.2);
+  }
+
+  &:hover {
+    border-color: #a0a0a0;
+  }
+}
