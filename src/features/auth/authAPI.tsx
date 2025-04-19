@@ -24,3 +24,26 @@ export const introspect = async (token: string) => {
   const response = await axios.post(`${API_URL}/auth/introspect`, { token });
   return response.data;
 };
+
+export const sendOTP = async (username: string, email: string) => {
+  const response = await axios.post(`${API_URL}/auth/send-otp`, {
+    username,
+    email,
+  });
+  return response.data;
+};
+
+export const resetPassword = async (
+  username: string,
+  email: string,
+  otp: string,
+  newPassword: string
+) => {
+  const response = await axios.post(`${API_URL}/auth/reset-password`, {
+    username,
+    email,
+    otp,
+    newPassword,
+  });
+  return response.data;
+};

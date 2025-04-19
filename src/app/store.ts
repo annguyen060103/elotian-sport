@@ -2,6 +2,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 
 import authReducer from '../features/auth/authSlice';
 import branchReducer from '../features/branch/branchSlice';
+import classScheduleReducer from '../features/classSchedule/classScheduleSlice';
 import { combineReducers } from 'redux';
 import { configureStore } from '@reduxjs/toolkit';
 import facilityReducer from '../features/facility/facilitySlice';
@@ -14,7 +15,7 @@ import userSubscriptionReducer from '../features/userSubscription/userSubscripti
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth', 'user', 'branch', 'facility', 'payment', 'subscription', 'userSubscription'],
+    whitelist: ['auth', 'user', 'branch', 'facility', 'payment', 'subscription', 'userSubscription', 'classSchedule'],
 };
 
 const rootReducer = combineReducers({
@@ -24,7 +25,8 @@ const rootReducer = combineReducers({
     facility: facilityReducer,
     payment: paymentReducer,
     subscription: subscriptionReducer,
-    userSubscription: userSubscriptionReducer
+    userSubscription: userSubscriptionReducer,
+    classSchedule: classScheduleReducer
 
 });
 
