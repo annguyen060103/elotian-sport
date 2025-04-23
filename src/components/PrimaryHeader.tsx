@@ -60,12 +60,12 @@ export const PrimaryHeader = () => {
       }
       {
         <NavLink
-          to="/equipment"
+          to="/facility"
           className={({ isActive, isPending }) =>
             isPending ? '' : isActive ? styles.active : styles.pending
           }
         >
-          <Text type="Body 2 Bold">{t('equipment')}</Text>
+          <Text type="Body 2 Bold">{t('facility')}</Text>
         </NavLink>
       }
       {
@@ -80,12 +80,12 @@ export const PrimaryHeader = () => {
       }
       {
         <NavLink
-          to="/token"
+          to="/subscription-plan"
           className={({ isActive, isPending }) =>
             isPending ? '' : isActive ? styles.active : styles.pending
           }
         >
-          <Text type="Body 2 Bold">{t('token')}</Text>
+          <Text type="Body 2 Bold">{t('supcriptionPlan')}</Text>
         </NavLink>
       }
 

@@ -28,7 +28,7 @@ interface EquipmentData {
   condition: string;
 }
 
-export const Equipment = () => {
+export const Report = () => {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
