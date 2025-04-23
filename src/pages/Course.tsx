@@ -66,7 +66,7 @@ export const Course = () => {
 
   useEffect(() => {
     getAllBranches();
-    //getBranchById(branches[0].branchId);
+    // getBranchById(branches[0].branchId);
     console.log('Branchs', branches);
     //console.log("This branch", currentBranch.branchId);
 
@@ -80,11 +80,11 @@ export const Course = () => {
     return () => {};
   }, []);
 
-  useEffect(() => {
-    getFacilitiesByBranch(currentBranch.branchId);
-    console.log('facilites of branch', facilities);
-    return () => {};
-  }, []);
+  // useEffect(() => {
+  //   getFacilitiesByBranch(currentBranch.branchId);
+  //   console.log('facilites of branch', facilities);
+  //   return () => {};
+  // }, []);
 
   const initialData: CourseData[] = [
     {
