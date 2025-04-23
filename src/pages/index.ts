@@ -4,6 +4,6 @@ export * from './Course';
 export * from './Trainer';
 export * from './Student';
 export * from './Staff';
-export * from './Equipment';
+export * from './Facility';
 export * from './Report';
-export * from './Token';
+export * from './SubscriptionPlan';

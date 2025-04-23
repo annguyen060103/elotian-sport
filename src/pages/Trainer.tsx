@@ -94,7 +94,7 @@ export const Trainer = () => {
     getAllBranches();
     console.log('Branches', branches);
 
-    console.log('Coach', users);
+    console.log('COACH', users);
   }, []);
 
   useEffect(() => {
@@ -192,7 +192,7 @@ export const Trainer = () => {
         address: trainerData.address || '',
         height: trainerData.height || 0,
         weight: trainerData.weight || 0,
-        healthIssues: trainerData.healthIssues || '',
+        // healthIssues: trainerData.healthIssues || '',
         roles: ['COACH'],
         status: 'ACTIVE',
         branchId: selectedId,
@@ -376,10 +376,10 @@ export const Trainer = () => {
                             setValue('cccd', trainerToEdit.cccd);
                             setValue('height', trainerToEdit.height);
                             setValue('weight', trainerToEdit.weight);
-                            setValue(
-                              'healthIssues',
-                              trainerToEdit.healthIssues,
-                            );
+                            // setValue(
+                            //   'healthIssues',
+                            //   trainerToEdit.healthIssues,
+                            // );
                             setValue(
                               'specialization',
                               trainerToEdit.specialization,
@@ -653,7 +653,7 @@ export const Trainer = () => {
               name="weight"
             />
 
-            <Controller
+            {/* <Controller
               control={control}
               rules={{
                 required: t('healthIssuesRequired'),
@@ -670,7 +670,7 @@ export const Trainer = () => {
                 />
               )}
               name="healthIssues"
-            />
+            /> */}
 
             <Controller
               control={control}
