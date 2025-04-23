@@ -1,18 +1,18 @@
-import { HTMLProps, useState } from 'react';
+import "react-markdown-editor-lite/lib/index.css";
 
-import cx from 'classnames';
-import MarkdownIt from 'markdown-it';
-import MdEditor, { Plugins } from 'react-markdown-editor-lite';
+import { HTMLProps, useState } from "react";
+import MdEditor, { Plugins } from "react-markdown-editor-lite";
+
+import AddPhoto from "@/assets/icons/add-photo.png";
+import Clear from "@/assets/icons/times-circle-solid.png";
+import MarkdownIt from "markdown-it";
+import { PluginProps } from "react-markdown-editor-lite";
+import { Text } from "./Text";
+import cx from "classnames";
+import edit from "@/assets/icons/edit.png";
+import styles from "./Input.module.scss";
+
 // import style manually
-import 'react-markdown-editor-lite/lib/index.css';
-import { PluginProps } from 'react-markdown-editor-lite';
-
-import styles from './Input.module.scss';
-import { Text } from './Text';
-
-import AddPhoto from '@/assets/icons/add-photo.png';
-import edit from '@/assets/icons/edit.png';
-import Clear from '@/assets/icons/times-circle-solid.png';
 
 type InputProps = HTMLProps<HTMLInputElement> & {
   label?: string;
@@ -43,7 +43,7 @@ export const Input = ({
             ? styles.errorBorder
             : isFocused
             ? styles.focusedBorder
-            : styles.border,
+            : styles.border
         )}
       >
         <input
@@ -99,7 +99,7 @@ export const TextArea = ({
             ? styles.errorBorder
             : isFocused
             ? styles.focusedBorder
-            : styles.border,
+            : styles.border
         )}
         data-value={value}
       >
@@ -132,7 +132,7 @@ const EmptyLine = (props: PluginProps) => {
       className="button button-type-EmptyLine"
       title="EmptyLine"
       onClick={() => {
-        props.editor.insertText('` `  ');
+        props.editor.insertText("` `  ");
       }}
     >
       Empty Line
@@ -143,8 +143,8 @@ const EmptyLine = (props: PluginProps) => {
 // EmptyLine.defaultConfig = {
 //   start: 0
 // }
-EmptyLine.align = 'left';
-EmptyLine.pluginName = 'EmptyLine';
+EmptyLine.align = "left";
+EmptyLine.pluginName = "EmptyLine";
 
 const mdParser = new MarkdownIt({
   html: true,
@@ -198,12 +198,12 @@ export const RichTextArea = ({
             ? styles.errorBorder
             : isFocused
             ? styles.focusedBorder
-            : styles.border,
+            : styles.border
         )}
         data-value={value}
       >
         <MdEditor
-          style={{ borderRadius: ' 12px', overflow: 'hidden' }}
+          style={{ borderRadius: " 12px", overflow: "hidden" }}
           renderHTML={(text) => mdParser.render(text)}
           onChange={({ text }) => {
             onChange?.(text);
@@ -239,7 +239,7 @@ export const ImageUpload = ({
   onSelected,
   imageURL,
 }: ImageUploadProps) => {
-  const [preview, setPreview] = useState('');
+  const [preview, setPreview] = useState("");
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];

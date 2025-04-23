@@ -1,20 +1,33 @@
-FROM node:20-alpine
+# ---------- STAGE 1: Build ----------
+FROM node:20.11.1-slim AS builder
+
+# Cài công cụ cần thiết để build (nếu có native packages)
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy package files và cài dependencies bằng Yarn
+# Copy package config và cài deps
 COPY package.json yarn.lock ./
 RUN yarn install
 
-# Copy source code
+# Copy toàn bộ source code
 COPY . .
 
-# Expose port Vite dev server
+# Build Vite app
+RUN yarn build
+
+# ---------- STAGE 2: Serve ----------
+FROM node:20.11.1-slim AS runner
+
+WORKDIR /app
+
+# Cài server tĩnh
+RUN yarn global add serve
+
+# Copy từ builder
+COPY --from=builder /app/dist ./dist
+
 EXPOSE 5173
 
-# Start Vite dev server, mở cho tất cả IP (Docker cần)
-CMD ["yarn", "dev", "--host", "0.0.0.0"]
-
-### docker build -t lehaitien/gym-crm-fe:v1 .
-
-
+# Serve app production
+CMD ["serve", "-s", "dist", "-l", "5173"]
