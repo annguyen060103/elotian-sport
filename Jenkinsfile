@@ -42,6 +42,7 @@ docker rm gym-crm-fe-container || true
 echo "Running new frontend container..."
 docker run -d \\
     --name gym-crm-fe-container \\
+    --network backend \\
     -p 5173:5173 \\
     ${IMAGE_NAME}:${IMAGE_TAG}
 
