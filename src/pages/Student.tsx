@@ -101,18 +101,7 @@ export const Student = () => {
     healthIssues: user.healthIssues,
   }));
 
-  const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-
-  const handleSelect = (id: string) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-    );
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    setSelected(checked ? data.map((item) => item.id) : []);
-  };
 
   const handleSort = () => {
     const isAsc = order === 'asc';
@@ -123,19 +112,6 @@ export const Student = () => {
     );
     setDisplayedUsers(sorted);
     setOrder(isAsc ? 'desc' : 'asc');
-  };
-
-  const handleDeleteSelected = () => {
-    if (!currentUser.roles.includes('ADMIN')) {
-      alert('Only admins can delete students.');
-      return;
-    }
-
-    const filtered = displayedUsers.filter(
-      (user) => !selected.includes(user.userId),
-    );
-    setDisplayedUsers(filtered);
-    setSelected([]);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -263,32 +239,11 @@ export const Student = () => {
         <span className={styles.title}>
           <Text type="Headline 1">{t('studentManagement')}</Text>
         </span>
-        <div className={styles.deleteButtonWrapper}>
-          {selected.length > 0 && (
-            <Popconfirm
-              title="Are you sure you want to delete?"
-              onConfirm={handleDeleteSelected}
-            >
-              <Button icon={<DeleteOutlined />} danger>
-                Delete ({selected.length})
-              </Button>
-            </Popconfirm>
-          )}
-        </div>
       </div>
       <TableContainer component={Paper} className={styles.table}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  checked={selected.length === data.length}
-                  indeterminate={
-                    selected.length > 0 && selected.length < data.length
-                  }
-                  onChange={(e) => handleSelectAll(e.target.checked)}
-                />
-              </TableCell>
               <TableCell>
                 <TableSortLabel active direction={order} onClick={handleSort}>
                   <Text
@@ -311,17 +266,7 @@ export const Student = () => {
             {data
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
-                <TableRow
-                  key={row.id}
-                  hover
-                  selected={selected.includes(row.id)}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selected.includes(row.id)}
-                      onChange={() => handleSelect(row.id)}
-                    />
-                  </TableCell>
+                <TableRow key={row.id} hover>
                   <TableCell>
                     <Text type="Body 2 Bold">{row.studentName}</Text>
                   </TableCell>
@@ -333,8 +278,8 @@ export const Student = () => {
                   </TableCell>
                   <TableCell>
                     <div className={styles.userActions}>
-                      <img
-                        src={edit}
+                      <Button
+                        icon={<img src={edit} />}
                         onClick={() => {
                           const studentToEdit = displayedUsers.find(
                             (user) => user.userId === row.id,
@@ -730,6 +675,7 @@ export const Student = () => {
 
             <Controller
               control={control}
+              rules={{ required: t('branchNameRequired') }}
               render={({ field: { onBlur } }) => (
                 <select
                   className={styles.select}

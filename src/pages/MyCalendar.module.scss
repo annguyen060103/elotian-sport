@@ -1,0 +1,63 @@
+@use '@/colors.scss' as *;
+
+.container {
+  padding: 24px 48px;
+  background-color: #f8f8f8;
+}
+
+.topSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.calendar {
+  max-height: 600px;
+  overflow-y: auto;
+
+  :global(.ant-picker-calendar-date) {
+    min-height: 80px !important;
+  }
+
+  :global(.ant-picker-calendar-date-content) {
+    padding: 4px !important;
+  }
+
+  :global(.ant-picker-calendar-date-value) {
+    font-size: 12px;
+  }
+}
+
+.modal {
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.userActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+
+  > img {
+    margin-left: 16px;
+    cursor: pointer;
+  }
+}
