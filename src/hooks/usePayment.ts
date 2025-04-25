@@ -31,7 +31,7 @@ export const usePayment = () => {
 
     // Fetch payments by status (PAID, PENDING, etc.)
     const getPaymentsByStatus = (status: "PAID" | "PENDING" | "FAILED") =>
-        dispatch(fetchPaymentsByStatus({ status, token }));
+        dispatch(fetchPaymentsByStatus({ status, token })); 
 
     // Create a new payment transaction
     const createPayment = (paymentData: Payment) =>

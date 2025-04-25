@@ -1,4 +1,4 @@
-import { Button, Popconfirm } from 'antd';
+import { Button, Modal, Popconfirm } from 'antd';
 import {
   Checkbox,
   Paper,
@@ -16,150 +16,78 @@ import { useEffect, useState } from 'react';
 
 import { Text } from '@/components/Text';
 import styles from './Course.module.scss';
+import { useTranslation } from 'react-i18next';
+import { useUser } from '@/hooks/useUser';
+import plus from '@/assets/icons/plus.svg';
+import edit from '@/assets/icons/edit.png';
+import { Button as CustomButton } from '@/components/Button';
+import { Input } from '@/components/Input';
+import { Controller, set, useForm } from 'react-hook-form';
+import { User } from '@/interfaces/User';
 import { useBranch } from '@/hooks/useBranch';
 import { useFacility } from '@/hooks/useFacility';
-import { useTranslation } from 'react-i18next';
-import plus from '@/assets/icons/plus.svg';
-import { Button as CustomButton } from '@/components/Button';
-
-interface CourseData {
-  id: string;
-  courseName: string;
-  timetable: string;
-  schedule: string;
-  trainerName: string;
-}
+import { SubscriptionPlan as SubcriptionPlan_Partial } from '@/interfaces/SubscriptionPlan';
+import { useSubscription } from '@/hooks/useSubscription';
+import { useClassSchedule } from '@/hooks/useClassSchedule';
+import { ClassSchedule } from '@/interfaces/ClassSchedule';
+import { start } from 'repl';
+import { teal } from '@mui/material/colors';
 
 export const Course = () => {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [displayedCourses, setDisplayedCourses] = useState([]);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<
+    ClassSchedule & { id?: string }
+  >();
+  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedId, setSelectedId] = useState('');
 
   const {
-    branches,
-    currentBranch,
-    loading: branchLoading,
-    error: branchError,
-    getAll: getAllBranches,
-    getById: getBranchById,
-    create: createBranch,
-    update: updateBranch,
-    remove: removeBranch,
-    addUser,
-    removeUser,
-    clear: clearBranch,
-  } = useBranch();
+    schedules,
+    currentSchedule,
+    loading,
+    error,
+    getAll,
+    getById,
+    getByBranch,
+    filter,
+    createFixedSchedule,
+    remove,
+    clear,
+  } = useClassSchedule();
 
   const {
-    facilities,
-    currentFacility,
-    loading: facilityLoading,
-    error: facilityError,
-    getAll: getAllFacilities,
-    getById: getFacilityById,
-    getByBranch: getFacilitiesByBranch,
-    create: createFacility,
-    update: updateFacility,
-    remove: removeFacility,
-    clear: clearFacility,
-  } = useFacility();
+    formState: { errors },
+    control,
+    setValue,
+    getValues,
+    handleSubmit,
+  } = useForm<Partial<ClassSchedule>>();
 
   useEffect(() => {
-    getAllBranches();
-    // getBranchById(branches[0].branchId);
-    console.log('Branchs', branches);
-    //console.log("This branch", currentBranch.branchId);
+    getAll();
 
-    return () => {};
+    console.log('Courses', schedules);
   }, []);
 
   useEffect(() => {
-    // getAllFacilities();
-    //console.log("facilities", facilities);
+    console.log('Fetched courses:', schedules);
+    setDisplayedCourses(schedules);
+  }, [schedules]);
 
-    return () => {};
-  }, []);
+  const data = displayedCourses.map((schedule) => ({
+    id: schedule.classScheduleId,
+    startTime: schedule.startTime,
+    endTime: schedule.endTime,
+    status: schedule.status,
+    classType: schedule.classType,
+    shift: schedule.shift,
+    teacherId: schedule.teacherId,
+  }));
 
-  // useEffect(() => {
-  //   getFacilitiesByBranch(currentBranch.branchId);
-  //   console.log('facilites of branch', facilities);
-  //   return () => {};
-  // }, []);
-
-  const initialData: CourseData[] = [
-    {
-      id: '1',
-      courseName: 'React Basic',
-      timetable: 'Monday - Wednesday',
-      schedule: 'July 2025',
-      trainerName: 'John Doe',
-    },
-    {
-      id: '2',
-      courseName: 'Node.js Advanced',
-      timetable: 'Tuesday - Thursday',
-      schedule: 'August 2025',
-      trainerName: 'Jane Smith',
-    },
-    {
-      id: '3',
-      courseName: 'Python for Data Science',
-      timetable: 'Weekend',
-      schedule: 'September 2025',
-      trainerName: 'Alice Johnson',
-    },
-    {
-      id: '4',
-      courseName: 'UI/UX Design',
-      timetable: 'Tuesday - Thursday',
-      schedule: 'November 2025',
-      trainerName: 'Eva Brown',
-    },
-    {
-      id: '5',
-      courseName: 'Mobile App Development',
-      timetable: 'Tuesday - Saturday',
-      schedule: 'March 2026',
-      trainerName: 'Bruce Wayne',
-    },
-    {
-      id: '6',
-      courseName: 'Kubernetes Administration',
-      timetable: 'Wednesday - Friday',
-      schedule: 'May 2026',
-      trainerName: 'Peter Parker',
-    },
-    {
-      id: '7',
-      courseName: 'Blockchain Fundamentals',
-      timetable: 'Monday - Thursday',
-      schedule: 'June 2026',
-      trainerName: 'Natasha Romanoff',
-    },
-    {
-      id: '8',
-      courseName: 'Java Spring Boot',
-      timetable: 'Weekend',
-      schedule: 'July 2026',
-      trainerName: 'Stephen Strange',
-    },
-    {
-      id: '9',
-      courseName: 'AWS Cloud Practitioner',
-      timetable: 'Monday - Wednesday',
-      schedule: 'August 2026',
-      trainerName: 'Steve Rogers',
-    },
-    {
-      id: '10',
-      courseName: 'Data Visualization with D3.js',
-      timetable: 'Tuesday - Friday',
-      schedule: 'September 2026',
-      trainerName: 'Wanda Maximoff',
-    },
-  ];
-
-  const [data, setData] = useState<CourseData[]>(initialData);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
 
@@ -175,19 +103,27 @@ export const Course = () => {
 
   const handleSort = () => {
     const isAsc = order === 'asc';
-    const sorted = [...data].sort((a, b) =>
+    const sorted = [...displayedCourses].sort((a, b) =>
       isAsc
-        ? a.courseName.localeCompare(b.courseName)
-        : b.courseName.localeCompare(a.courseName),
+        ? a.classScheduleId.localeCompare(b.classScheduleId)
+        : b.classScheduleId.localeCompare(a.classScheduleId),
     );
-    setData(sorted);
+    setDisplayedCourses(sorted);
     setOrder(isAsc ? 'desc' : 'asc');
   };
 
-  const handleDeleteSelected = () => {
-    setData((prev) => prev.filter((item) => !selected.includes(item.id)));
-    setSelected([]);
-  };
+  // const handleDeleteSelected = () => {
+  //   if (!currentUser.roles.includes('ADMIN')) {
+  //     alert('Only admins can delete tfacilities.');
+  //     return;
+  //   }
+
+  //   const filtered = displayedCourses.filter(
+  //     (user) => !selected.includes(user.userId),
+  //   );
+  //   setDisplayedCourses(filtered);
+  //   setSelected([]);
+  // };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -200,6 +136,118 @@ export const Course = () => {
     setPage(0);
   };
 
+  const refetch = async () => {
+    try {
+      await getAll();
+      console.log('Data refetched successfully!');
+    } catch (err) {
+      console.error('Failed to refetch data:', err);
+    }
+  };
+
+  const onSaveCourse = async (courseData: Partial<ClassSchedule>) => {
+    try {
+      const newCourse = {
+        classScheduleId: '',
+        startTime: courseData.startTime || '',
+        endTime: courseData.endTime || '',
+        status:
+          (courseData.status as 'CANCELED' | 'SCHEDULED' | 'COMPLETED') ||
+          'SCHEDULED',
+        classType: (courseData.classType as 'ONLINE' | 'OFFLINE') || 'ONLINE',
+        shift:
+          (courseData.shift as 'MORNING' | 'AFTERNOON' | 'EVENING') ||
+          'MORNING',
+        branchId: selectedId,
+        teacherId: courseData.teacherId || '',
+        facilityId: courseData.facilityId || '',
+        weekOfYear: courseData.weekOfYear || 1,
+        month: courseData.month || 1,
+        year: courseData.year || new Date().getFullYear(),
+      };
+
+      console.log('💥 newCourse = ', newCourse);
+
+      const result = await createFixedSchedule(
+        {
+          classType: newCourse.classType,
+          shift: newCourse.shift,
+          weekMode: 'default',
+        },
+        newCourse,
+      );
+      console.log('Course created:', result);
+
+      alert('Upload successful!');
+
+      setDisplayedCourses((prev) => [
+        ...prev,
+        {
+          classScheduleId: courseData.classScheduleId,
+          startTime: courseData.startTime,
+          endTime: courseData.endTime,
+          status: courseData.status,
+          classType: courseData.classType,
+          shift: courseData.shift,
+        },
+      ]);
+
+      setCreateModalVisible(false);
+      refetch();
+    } catch (err) {
+      console.error('Upload failed!', err);
+    }
+  };
+
+  // const onUpdateFacility = async (courseData: Partial<ClassSchedule>) => {
+  //   try {
+  //     const updatePlan = {
+  //       classScheduleId: selectedCourse?.id,
+  //       startTime: courseData.startTime,
+  //       endTime: courseData.endTime,
+  //       status: courseData.status,
+  //       classType: courseData.classType,
+  //       shift: courseData.shift,
+  //     };
+
+  //     console.log('💥 updatePlan = ', updatePlan);
+
+  //     await update(updatePlan.planId, updatePlan);
+
+  //     alert('Plan updated successfully!');
+  //     setSelectedCourse(undefined);
+
+  //     setValue('planName', '');
+  //     setValue('duration', 0);
+  //     setValue('price', 0);
+  //     setValue('description', '');
+
+  //     setCreateModalVisible(false);
+  //     refetch();
+  //   } catch (err) {
+  //     console.error('Failed to update subcription plan:', err);
+  //     alert('Failed to update subcription plan. Please try again.');
+  //   }
+  // };
+
+  const onDeletePlan = async (classScheduleId: string) => {
+    try {
+      await remove(classScheduleId);
+
+      alert('Class schedule deleted successfully!');
+
+      setDisplayedCourses((prev) =>
+        prev.filter(
+          (classSchedule) => classSchedule.classScheduleId !== classScheduleId,
+        ),
+      );
+      refetch();
+    } catch (err) {
+      console.error('Failed to delete class schedule:', err);
+      alert('Failed to delete class schedule. Please try again.');
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.topSection}>
@@ -210,7 +258,7 @@ export const Course = () => {
           {selected.length > 0 && (
             <Popconfirm
               title="Are you sure you want to delete?"
-              onConfirm={handleDeleteSelected}
+              // onConfirm={handleDeleteSelected}
             >
               <Button icon={<DeleteOutlined />} danger>
                 Delete ({selected.length})
@@ -235,18 +283,18 @@ export const Course = () => {
               <TableCell>
                 <TableSortLabel active direction={order} onClick={handleSort}>
                   <Text className={styles.courseNameText} type="Caption 1 Bold">
-                    Course name
+                    Teacher id
                   </Text>
                 </TableSortLabel>
               </TableCell>
               <TableCell>
-                <Text type="Caption 1 Medium">Timetable</Text>
+                <Text type="Caption 1 Medium">Status</Text>
               </TableCell>
               <TableCell>
-                <Text type="Caption 1 Medium">Training schedule</Text>
+                <Text type="Caption 1 Medium">Shift</Text>
               </TableCell>
               <TableCell>
-                <Text type="Caption 1 Medium">Trainer</Text>
+                <Text type="Caption 1 Medium">Start time - End time</Text>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -266,28 +314,34 @@ export const Course = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Bold">{row.courseName}</Text>
+                    <Text type="Body 2 Bold">{row.teacherId}</Text>
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Regular">{row.timetable}</Text>
+                    <Text type="Body 2 Regular">{row.status}</Text>
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Regular">{row.schedule}</Text>
+                    <Text type="Body 2 Regular">{row.shift}</Text>
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Regular">{row.trainerName}</Text>
+                    <Text type="Body 2 Regular">
+                      {row.startTime} - {row.endTime}
+                    </Text>
                   </TableCell>
                   <TableCell>
-                    <Popconfirm
-                      title="Are you sure you want to delete?"
-                      onConfirm={() =>
-                        setData((prev) =>
-                          prev.filter((item) => item.id !== row.id),
-                        )
-                      }
-                    >
-                      <Button icon={<DeleteOutlined />} danger />
-                    </Popconfirm>
+                    <Text type="Body 2 Regular">{row.classType}</Text>
+                  </TableCell>
+                  <TableCell>
+                    <div className={styles.userActions}>
+                      <Popconfirm
+                        title="Are you sure you want to delete?"
+                        onConfirm={() => {
+                          console.log('ID to delete:', row.id);
+                          onDeletePlan(row.id);
+                        }}
+                      >
+                        <Button icon={<DeleteOutlined />} danger />
+                      </Popconfirm>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -299,6 +353,10 @@ export const Course = () => {
             type="primary"
             title={t('addNew')}
             icon={<img src={plus} />}
+            onClick={() => {
+              setSelectedCourse(undefined);
+              setCreateModalVisible(true);
+            }}
           />
         </div>
       </TableContainer>
@@ -311,6 +369,148 @@ export const Course = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      {createModalVisible && (
+        <Modal closable={false} open={createModalVisible} footer={null}>
+          <div className={styles.modal}>
+            <Text type="Headline 1">
+              {selectedCourse ? t('editCourse') : t('createNewCourse')}
+            </Text>
+            {/* <Controller
+              control={control}
+              rules={{
+                required: t('planNameRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('planName')}
+                  placeholder={t('planNamePlaceholder')}
+                  onClear={() => setValue('planName', '')}
+                  error={errors.planName?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="planName"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('durationRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('duration')}
+                  placeholder={t('durationPlaceholder')}
+                  onClear={() => setValue('duration', 0)}
+                  error={errors.duration?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="duration"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('priceRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('price')}
+                  placeholder={t('pricePlaceholder')}
+                  onClear={() => setValue('price', 0)}
+                  error={errors.price?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="price"
+            />
+
+            {selectedCourse && (
+              <>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: t('createdAtRequired'),
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      label={t('createdAt')}
+                      placeholder={t('createdAtPlaceholder')}
+                      onClear={() => setValue('createdAt', '')}
+                      error={errors.createdAt?.message}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="createdAt"
+                />
+
+                <Controller
+                  control={control}
+                  rules={{
+                    required: t('updatedAtRequired'),
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      label={t('updatedAt')}
+                      placeholder={t('updatedAtPlaceholder')}
+                      onClear={() => setValue('updatedAt', '')}
+                      error={errors.updatedAt?.message}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="updatedAt"
+                />
+              </>
+            )}
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('descriptionRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('description')}
+                  placeholder={t('descriptionPlaceholder')}
+                  onClear={() => setValue('description', '')}
+                  error={errors.description?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="description"
+            /> */}
+
+            <div className={styles.modalFooter}>
+              <CustomButton
+                type="outline"
+                title={t('cancel')}
+                onClick={() => setCreateModalVisible(false)}
+              />
+              <CustomButton
+                title={t('save')}
+                onClick={handleSubmit((data) => {
+                  if (!selectedCourse) {
+                    onSaveCourse(data);
+                  }
+                })}
+              />
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
