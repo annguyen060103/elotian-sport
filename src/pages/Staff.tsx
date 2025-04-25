@@ -77,7 +77,7 @@ export const Staff = () => {
 
   useEffect(() => {
     // Gọi API getByRole khi load page
-    getByRole('STAFF');
+    getByRole('COACH');
 
     getMyInfo();
 
@@ -150,7 +150,7 @@ export const Staff = () => {
 
   const refetch = async () => {
     try {
-      await getByRole('STAFF'); // Fetch the latest data
+      await getByRole('COACH'); // Fetch the latest data
       console.log('Data refetched successfully!');
     } catch (err) {
       console.error('Failed to refetch data:', err);

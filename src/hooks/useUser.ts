@@ -25,10 +25,14 @@ export const useUser = () => {
   const token = auth.accessToken;
 
   const getAll = () => dispatch(fetchAllUsers(token));
-  const getById = (userId: string) =>
+  const getById = (userId: string) => {
+    console.log('🚀 Calling getById for user:', userId);
     dispatch(fetchUserById({ userId, token }));
-  const getByRole = (roleName: string) =>
+  };
+  const getByRole = (roleName: string) => {
+    console.log('📢 Calling getByRole:', roleName);
     dispatch(fetchUsersByRole({ roleName, token }));
+  };
   const getMyInfo = () => dispatch(fetchMyInfo(token));
   const register = (userData: any) => dispatch(createUser({ userData, token }));
   const registerCoachUser = (coachData: any) =>

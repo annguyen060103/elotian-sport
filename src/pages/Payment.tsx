@@ -15,7 +15,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 
 import { Text } from '@/components/Text';
-import styles from './SubscriptionPlan.module.scss';
+import styles from './Payment.module.scss';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '@/hooks/useUser';
 import plus from '@/assets/icons/plus.svg';
@@ -26,34 +26,39 @@ import { Controller, set, useForm } from 'react-hook-form';
 import { User } from '@/interfaces/User';
 import { useBranch } from '@/hooks/useBranch';
 import { useFacility } from '@/hooks/useFacility';
-import { SubscriptionPlan as SubcriptionPlan_Partial } from '@/interfaces/SubscriptionPlan';
+import {
+  Payment as Payment_Partial,
+  PaymentStatus,
+} from '@/interfaces/Payment';
 import { useSubscription } from '@/hooks/useSubscription';
+import { usePayment } from '@/hooks/usePayment';
+import { v4 as uuidv4 } from 'uuid';
 
-export const SubscriptionPlan = () => {
+export const Payment = () => {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [displayedPlans, setDisplayedPlans] = useState([]);
+  const [displayedPayments, setDisplayedPayments] = useState([]);
   const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<
-    SubcriptionPlan_Partial & { id?: string }
+  const [selectedPayment, setSelectedPayment] = useState<
+    Payment_Partial & { id?: string }
   >();
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedId, setSelectedId] = useState('');
 
   const {
-    plans,
-    currentPlan,
+    payments,
+    currentPayment,
     loading,
     error,
-    getAll,
-    getById,
-    getByName,
-    create,
-    update,
-    remove,
+    getPaymentsByUserId,
+    getPaymentByTransactionId,
+    getPaymentsByStatus,
+    createPayment,
     clear,
-  } = useSubscription();
+  } = usePayment();
+
+  const { users } = useUser();
 
   const {
     formState: { errors },
@@ -61,25 +66,25 @@ export const SubscriptionPlan = () => {
     setValue,
     getValues,
     handleSubmit,
-  } = useForm<Partial<SubcriptionPlan_Partial>>();
+  } = useForm<Partial<Payment_Partial>>();
 
   useEffect(() => {
-    getAll();
+    getPaymentsByStatus('PAID');
 
-    console.log('Subscription plans', plans);
+    console.log('Payments', payments);
   }, []);
 
   useEffect(() => {
-    console.log('Fetched subscription plans:', plans);
-    setDisplayedPlans(plans);
-  }, [plans]);
+    console.log('Fetched payments:', payments);
+    setDisplayedPayments(payments);
+  }, [payments]);
 
-  const data = displayedPlans.map((plan) => ({
-    id: plan.planId,
-    planName: plan.planName,
-    duration: plan.duration,
-    price: plan.price,
-    description: plan.description,
+  const data = displayedPayments.map((payment) => ({
+    id: payment.paymentId,
+    paymentMethod: payment.paymentMethod,
+    amount: payment.amount,
+    status: payment.status,
+    paymentDate: payment.paymentDate,
   }));
 
   const [selected, setSelected] = useState<string[]>([]);
@@ -97,12 +102,12 @@ export const SubscriptionPlan = () => {
 
   const handleSort = () => {
     const isAsc = order === 'asc';
-    const sorted = [...displayedPlans].sort((a, b) =>
+    const sorted = [...displayedPayments].sort((a, b) =>
       isAsc
-        ? a.planName.localeCompare(b.planName)
-        : b.planName.localeCompare(a.planName),
+        ? a.paymentId.localeCompare(b.paymentId)
+        : b.paymentId.localeCompare(a.paymentId),
     );
-    setDisplayedPlans(sorted);
+    setDisplayedPayments(sorted);
     setOrder(isAsc ? 'desc' : 'asc');
   };
 
@@ -112,10 +117,10 @@ export const SubscriptionPlan = () => {
   //     return;
   //   }
 
-  //   const filtered = displayedPlans.filter(
+  //   const filtered = displayedPayments.filter(
   //     (user) => !selected.includes(user.userId),
   //   );
-  //   setDisplayedPlans(filtered);
+  //   setDisplayedPayments(filtered);
   //   setSelected([]);
   // };
 
@@ -132,38 +137,42 @@ export const SubscriptionPlan = () => {
 
   const refetch = async () => {
     try {
-      await getAll();
+      await [getPaymentsByStatus('PAID')];
       console.log('Data refetched successfully!');
     } catch (err) {
       console.error('Failed to refetch data:', err);
     }
   };
 
-  const onSavePlan = async (planData: Partial<SubcriptionPlan_Partial>) => {
+  const onSavePayment = async (paymentData: Partial<Payment_Partial>) => {
     try {
-      const newPlan = {
-        planId: '',
-        planName: planData.planName || '',
-        duration: planData.duration,
-        price: planData.price || 0,
-        description: planData.description || '',
+      const newPayment = {
+        // paymentId: '',
+        userId: selectedId,
+        // transactionId: paymentData.transactionId || '',
+        paymentMethod: paymentData.paymentMethod || 'CASH',
+        amount: Number(paymentData.amount) || 0,
+        status: (paymentData.status as PaymentStatus) || 'PAID',
+        paymentDate: new Date().toISOString(),
       };
 
-      console.log('💥 newPlan = ', newPlan);
+      console.log('💥 newPayment = ', newPayment);
 
-      const result = await create(newPlan);
-      console.log('Subcription plan created:', result);
+      const result = await createPayment(newPayment);
+      console.log('Payment created:', result);
 
       alert('Upload successful!');
 
-      setDisplayedPlans((prev) => [
+      setDisplayedPayments((prev) => [
         ...prev,
         {
-          planId: planData.planId,
-          planName: planData.planName,
-          duration: planData.duration,
-          price: planData.price,
-          description: planData.description,
+          // paymentId: paymentData.paymentId,
+          userId: paymentData.userId,
+          // transactionId: paymentData.transactionId,
+          paymentMethod: paymentData.paymentMethod,
+          amount: paymentData.amount,
+          status: paymentData.status,
+          paymentDate: paymentData.paymentDate,
         },
       ]);
 
@@ -174,61 +183,11 @@ export const SubscriptionPlan = () => {
     }
   };
 
-  const onUpdateFacility = async (
-    planData: Partial<SubcriptionPlan_Partial>,
-  ) => {
-    try {
-      const updatePlan = {
-        planId: selectedPlan?.id,
-        planName: planData.planName,
-        duration: planData.duration,
-        price: planData.price,
-        description: planData.description,
-        createdAt: planData.createdAt,
-        updatedAt: planData.updatedAt,
-      };
-
-      console.log('💥 updatePlan = ', updatePlan);
-
-      await update(updatePlan.planId, updatePlan);
-
-      alert('Plan updated successfully!');
-      setSelectedPlan(undefined);
-
-      setValue('planName', '');
-      setValue('duration', 0);
-      setValue('price', 0);
-      setValue('description', '');
-
-      setCreateModalVisible(false);
-      refetch();
-    } catch (err) {
-      console.error('Failed to update subcription plan:', err);
-      alert('Failed to update subcription plan. Please try again.');
-    }
-  };
-
-  const onDeletePlan = async (planId: string) => {
-    try {
-      await remove(planId);
-
-      alert('Plan deleted successfully!');
-
-      setDisplayedPlans((prev) =>
-        prev.filter((plan) => plan.planId !== planId),
-      );
-      refetch();
-    } catch (err) {
-      console.error('Failed to delete plan:', err);
-      alert('Failed to delete plan. Please try again.');
-    }
-  };
-
   return (
     <div className={styles.container}>
       <div className={styles.topSection}>
         <span className={styles.title}>
-          <Text type="Headline 1">{t('planManagement')}</Text>
+          <Text type="Headline 1">{t('paymentManagement')}</Text>
         </span>
         <div className={styles.deleteButtonWrapper}>
           {selected.length > 0 && (
@@ -258,19 +217,25 @@ export const SubscriptionPlan = () => {
               </TableCell>
               <TableCell>
                 <TableSortLabel active direction={order} onClick={handleSort}>
-                  <Text className={styles.planNameText} type="Caption 1 Bold">
-                    Plan name
+                  <Text
+                    className={styles.paymentNameText}
+                    type="Caption 1 Bold"
+                  >
+                    Payment id
                   </Text>
                 </TableSortLabel>
               </TableCell>
               <TableCell>
-                <Text type="Caption 1 Medium">Duration</Text>
+                <Text type="Caption 1 Medium">Payment method</Text>
               </TableCell>
               <TableCell>
-                <Text type="Caption 1 Medium">Price</Text>
+                <Text type="Caption 1 Medium">Amount</Text>
               </TableCell>
               <TableCell>
-                <Text type="Caption 1 Medium">Description</Text>
+                <Text type="Caption 1 Medium">Status</Text>
+              </TableCell>
+              <TableCell>
+                <Text type="Caption 1 Medium">Payment date</Text>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -290,28 +255,31 @@ export const SubscriptionPlan = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Bold">{row.planName}</Text>
+                    <Text type="Body 2 Bold">{row.id}</Text>
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Regular">{row.duration}</Text>
+                    <Text type="Body 2 Regular">{row.paymentMethod}</Text>
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Regular">{row.price}</Text>
+                    <Text type="Body 2 Regular">{row.amount}</Text>
                   </TableCell>
                   <TableCell>
-                    <Text type="Body 2 Regular">{row.description}</Text>
+                    <Text type="Body 2 Regular">{row.status}</Text>
                   </TableCell>
                   <TableCell>
+                    <Text type="Body 2 Regular">{row.paymentDate}</Text>
+                  </TableCell>
+                  {/* <TableCell>
                     <div className={styles.userActions}>
                       <img
                         src={edit}
                         onClick={() => {
-                          const planToEdit = displayedPlans.find(
+                          const planToEdit = displayedPayments.find(
                             (plan) => plan.planId === row.id,
                           );
 
                           if (planToEdit) {
-                            setSelectedPlan({
+                            setSelectedPayment({
                               ...planToEdit,
                               id: row.id,
                             });
@@ -335,7 +303,7 @@ export const SubscriptionPlan = () => {
                         <Button icon={<DeleteOutlined />} danger />
                       </Popconfirm>
                     </div>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
           </TableBody>
@@ -347,7 +315,7 @@ export const SubscriptionPlan = () => {
             title={t('addNew')}
             icon={<img src={plus} />}
             onClick={() => {
-              setSelectedPlan(undefined);
+              setSelectedPayment(undefined);
               setCreateModalVisible(true);
             }}
           />
@@ -366,125 +334,88 @@ export const SubscriptionPlan = () => {
         <Modal closable={false} open={createModalVisible} footer={null}>
           <div className={styles.modal}>
             <Text type="Headline 1">
-              {selectedPlan ? t('editPlan') : t('createNewPlan')}
+              {selectedPayment ? t('editPlan') : t('createNewPayment')}
             </Text>
-            <Controller
-              control={control}
-              rules={{
-                required: t('planNameRequired'),
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label={t('planName')}
-                  placeholder={t('planNamePlaceholder')}
-                  onClear={() => setValue('planName', '')}
-                  error={errors.planName?.message}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  value={value}
-                />
-              )}
-              name="planName"
-            />
 
             <Controller
               control={control}
-              rules={{
-                required: t('durationRequired'),
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label={t('duration')}
-                  placeholder={t('durationPlaceholder')}
-                  onClear={() => setValue('duration', 0)}
-                  error={errors.duration?.message}
+              render={({ field: { onBlur } }) => (
+                <select
+                  className={styles.select}
                   onBlur={onBlur}
-                  onChange={onChange}
-                  value={value}
-                />
-              )}
-              name="duration"
-            />
-
-            <Controller
-              control={control}
-              rules={{
-                required: t('priceRequired'),
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label={t('price')}
-                  placeholder={t('pricePlaceholder')}
-                  onClear={() => setValue('price', 0)}
-                  error={errors.price?.message}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  value={value}
-                />
-              )}
-              name="price"
-            />
-
-            {selectedPlan && (
-              <>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: t('createdAtRequired'),
+                  onChange={(e) => {
+                    setSelectedId(e.target.value);
                   }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <Input
-                      label={t('createdAt')}
-                      placeholder={t('createdAtPlaceholder')}
-                      onClear={() => setValue('createdAt', '')}
-                      error={errors.createdAt?.message}
-                      onBlur={onBlur}
-                      onChange={onChange}
-                      value={value}
-                    />
-                  )}
-                  name="createdAt"
-                />
-
-                <Controller
-                  control={control}
-                  rules={{
-                    required: t('updatedAtRequired'),
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <Input
-                      label={t('updatedAt')}
-                      placeholder={t('updatedAtPlaceholder')}
-                      onClear={() => setValue('updatedAt', '')}
-                      error={errors.updatedAt?.message}
-                      onBlur={onBlur}
-                      onChange={onChange}
-                      value={value}
-                    />
-                  )}
-                  name="updatedAt"
-                />
-              </>
-            )}
+                  value={selectedId}
+                >
+                  {users.map((user) => (
+                    <option key={user.userId} value={user.userId}>
+                      {user.fullName}
+                    </option>
+                  ))}
+                </select>
+              )}
+              name="userId"
+            />
 
             <Controller
               control={control}
               rules={{
-                required: t('descriptionRequired'),
+                required: t('amountRequired'),
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  label={t('description')}
-                  placeholder={t('descriptionPlaceholder')}
-                  onClear={() => setValue('description', '')}
-                  error={errors.description?.message}
+                  label={t('amount')}
+                  placeholder={t('amountPlaceholder')}
+                  onClear={() => setValue('amount', 0)}
+                  error={errors.amount?.message}
                   onBlur={onBlur}
                   onChange={onChange}
                   value={value}
                 />
               )}
-              name="description"
+              name="amount"
             />
+
+            <Controller
+              control={control}
+              rules={{
+                required: t('paymentDateRequired'),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={t('paymentDate')}
+                  placeholder={t('paymentDatePlaceholder')}
+                  onClear={() => setValue('paymentDate', '')}
+                  error={errors.paymentDate?.message}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+              name="paymentDate"
+            />
+
+            {/* <Controller
+              control={control}
+              render={({ field: { onBlur } }) => (
+                <select
+                  className={styles.select}
+                  onBlur={onBlur}
+                  onChange={(e) => {
+                    setSelectedId(e.target.value);
+                  }}
+                  value={selectedId}
+                >
+                  {payments.map((payment) => (
+                    <option key={payment.paymentId} value={payment.paymentId}>
+                      {payment.paymentMethod}
+                    </option>
+                  ))}
+                </select>
+              )}
+              name="paymentMethod"
+            /> */}
 
             <div className={styles.modalFooter}>
               <CustomButton
@@ -495,11 +426,7 @@ export const SubscriptionPlan = () => {
               <CustomButton
                 title={t('save')}
                 onClick={handleSubmit((data) => {
-                  if (selectedPlan) {
-                    onUpdateFacility(data);
-                  } else {
-                    onSavePlan(data);
-                  }
+                  if (!selectedPayment) onSavePayment(data);
                 })}
               />
             </div>

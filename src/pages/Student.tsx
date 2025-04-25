@@ -432,7 +432,7 @@ export const Student = () => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   label={t('studentName')}
-                  placeholder={t('studentUsernamePlaceholder')}
+                  placeholder={t('studentNamePlaceholder')}
                   onClear={() => setValue('fullName', '')}
                   error={errors.fullName?.message}
                   onBlur={onBlur}

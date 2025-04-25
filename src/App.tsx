@@ -5,16 +5,18 @@ import {
   Login,
   Student,
   Trainer,
-  Report,
+  Payment,
   SubscriptionPlan,
   Admin,
   Course,
   Staff,
+  MyCalendar,
 } from '@/pages';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { PrimaryHeader } from '@/components/PrimaryHeader';
 
 import './App.css';
+import { MainCalendar } from './pages/MainCalendar';
 
 export default function App() {
   return (
@@ -70,10 +72,10 @@ export default function App() {
         }
       />
       <Route
-        path="/report"
+        path="/payment"
         element={
           <RequireAuth>
-            <Report />
+            <Payment />
           </RequireAuth>
         }
       />
@@ -82,6 +84,22 @@ export default function App() {
         element={
           <RequireAuth>
             <SubscriptionPlan />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/my-calendar"
+        element={
+          <RequireAuth>
+            <MyCalendar teacherId={''} />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/main-calendar"
+        element={
+          <RequireAuth>
+            <MainCalendar />
           </RequireAuth>
         }
       />

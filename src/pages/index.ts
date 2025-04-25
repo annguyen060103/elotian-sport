@@ -5,5 +5,6 @@ export * from './Trainer';
 export * from './Student';
 export * from './Staff';
 export * from './Facility';
-export * from './Report';
+export * from './Payment';
 export * from './SubscriptionPlan';
+export * from './MyCalendar';
