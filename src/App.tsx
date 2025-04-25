@@ -7,30 +7,21 @@ import {
   Trainer,
   Payment,
   SubscriptionPlan,
-  Admin,
   Course,
   Staff,
   MyCalendar,
+  Timekeeping,
 } from '@/pages';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { PrimaryHeader } from '@/components/PrimaryHeader';
 
 import './App.css';
-import { MainCalendar } from './pages/MainCalendar';
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/course" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route
-        path="/admin"
-        element={
-          <RequireAuth>
-            <Admin />
-          </RequireAuth>
-        }
-      />
       <Route
         path="/course"
         element={
@@ -91,15 +82,15 @@ export default function App() {
         path="/my-calendar"
         element={
           <RequireAuth>
-            <MyCalendar teacherId={''} />
+            <MyCalendar />
           </RequireAuth>
         }
       />
       <Route
-        path="/main-calendar"
+        path="/timekeeping"
         element={
           <RequireAuth>
-            <MainCalendar />
+            <Timekeeping />
           </RequireAuth>
         }
       />

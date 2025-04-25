@@ -1,6 +1,5 @@
 import { Button, Modal, Popconfirm } from 'antd';
 import {
-  Checkbox,
   Paper,
   Table,
   TableBody,
@@ -17,21 +16,11 @@ import { useEffect, useState } from 'react';
 import { Text } from '@/components/Text';
 import styles from './Course.module.scss';
 import { useTranslation } from 'react-i18next';
-import { useUser } from '@/hooks/useUser';
 import plus from '@/assets/icons/plus.svg';
-import edit from '@/assets/icons/edit.png';
 import { Button as CustomButton } from '@/components/Button';
-import { Input } from '@/components/Input';
-import { Controller, set, useForm } from 'react-hook-form';
-import { User } from '@/interfaces/User';
-import { useBranch } from '@/hooks/useBranch';
-import { useFacility } from '@/hooks/useFacility';
-import { SubscriptionPlan as SubcriptionPlan_Partial } from '@/interfaces/SubscriptionPlan';
-import { useSubscription } from '@/hooks/useSubscription';
+import { useForm } from 'react-hook-form';
 import { useClassSchedule } from '@/hooks/useClassSchedule';
 import { ClassSchedule } from '@/interfaces/ClassSchedule';
-import { start } from 'repl';
-import { teal } from '@mui/material/colors';
 
 export const Course = () => {
   const { t } = useTranslation();
@@ -42,36 +31,17 @@ export const Course = () => {
   const [selectedCourse, setSelectedCourse] = useState<
     ClassSchedule & { id?: string }
   >();
-  const [selectedBranch, setSelectedBranch] = useState([]);
-  const [selectedId, setSelectedId] = useState('');
+  const [selectedId] = useState('');
 
-  const {
-    schedules,
-    currentSchedule,
-    loading,
-    error,
-    getAll,
-    getById,
-    getByBranch,
-    filter,
-    createFixedSchedule,
-    remove,
-    clear,
-  } = useClassSchedule();
+  const { schedules, getAll, createFixedSchedule, remove } = useClassSchedule();
 
-  const {
-    formState: { errors },
-    control,
-    setValue,
-    getValues,
-    handleSubmit,
-  } = useForm<Partial<ClassSchedule>>();
+  const { handleSubmit } = useForm<Partial<ClassSchedule>>();
 
   useEffect(() => {
     getAll();
 
     console.log('Courses', schedules);
-  }, []);
+  }, [getAll, schedules]);
 
   useEffect(() => {
     console.log('Fetched courses:', schedules);
@@ -88,18 +58,7 @@ export const Course = () => {
     teacherId: schedule.teacherId,
   }));
 
-  const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-
-  const handleSelect = (id: string) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-    );
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    setSelected(checked ? data.map((item) => item.id) : []);
-  };
 
   const handleSort = () => {
     const isAsc = order === 'asc';
@@ -111,19 +70,6 @@ export const Course = () => {
     setDisplayedCourses(sorted);
     setOrder(isAsc ? 'desc' : 'asc');
   };
-
-  // const handleDeleteSelected = () => {
-  //   if (!currentUser.roles.includes('ADMIN')) {
-  //     alert('Only admins can delete tfacilities.');
-  //     return;
-  //   }
-
-  //   const filtered = displayedCourses.filter(
-  //     (user) => !selected.includes(user.userId),
-  //   );
-  //   setDisplayedCourses(filtered);
-  //   setSelected([]);
-  // };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -254,36 +200,15 @@ export const Course = () => {
         <span className={styles.title}>
           <Text type="Headline 1">{t('courseManagement')}</Text>
         </span>
-        <div className={styles.deleteButtonWrapper}>
-          {selected.length > 0 && (
-            <Popconfirm
-              title="Are you sure you want to delete?"
-              // onConfirm={handleDeleteSelected}
-            >
-              <Button icon={<DeleteOutlined />} danger>
-                Delete ({selected.length})
-              </Button>
-            </Popconfirm>
-          )}
-        </div>
       </div>
       <TableContainer component={Paper} className={styles.table}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  checked={selected.length === data.length}
-                  indeterminate={
-                    selected.length > 0 && selected.length < data.length
-                  }
-                  onChange={(e) => handleSelectAll(e.target.checked)}
-                />
-              </TableCell>
               <TableCell>
                 <TableSortLabel active direction={order} onClick={handleSort}>
                   <Text className={styles.courseNameText} type="Caption 1 Bold">
-                    Teacher id
+                    Trainer id
                   </Text>
                 </TableSortLabel>
               </TableCell>
@@ -296,23 +221,16 @@ export const Course = () => {
               <TableCell>
                 <Text type="Caption 1 Medium">Start time - End time</Text>
               </TableCell>
+              <TableCell>
+                <Text type="Caption 1 Medium">Class type</Text>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
-                <TableRow
-                  key={row.id}
-                  hover
-                  selected={selected.includes(row.id)}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selected.includes(row.id)}
-                      onChange={() => handleSelect(row.id)}
-                    />
-                  </TableCell>
+                <TableRow key={row.id} hover>
                   <TableCell>
                     <Text type="Body 2 Bold">{row.teacherId}</Text>
                   </TableCell>

@@ -1,0 +1,98 @@
+@use '@/colors.scss' as *;
+
+.coachNameText {
+  color: $grey1000;
+}
+
+.remainingText {
+  color: $grey600;
+}
+
+.container {
+  padding: 24px 48px;
+  background-color: #f8f8f8;
+}
+
+.topSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.deleteButtonWrapper {
+  width: 140px;
+  justify-content: flex-end;
+}
+.hideDelete {
+  visibility: hidden;
+}
+
+.addNewContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.addNewButton {
+  text-align: center;
+}
+
+.modal {
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.userActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+
+  > img {
+    margin-left: 16px;
+    cursor: pointer;
+  }
+}
+
+.select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  color: $grey1000;
+  font-size: 14px;
+  font-family: 'Outfit';
+  font-weight: 400;
+
+  border: 1px solid $grey1000;
+  border-radius: 12px;
+  background-color: #fff;
+
+  outline: none;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &:focus {
+    border-color: #5a6af0;
+    box-shadow: 0 0 0 2px rgba(90, 106, 240, 0.2);
+  }
+
+  &:hover {
+    border-color: #a0a0a0;
+  }
+}

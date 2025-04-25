@@ -70,16 +70,6 @@ export const PrimaryHeader = () => {
       }
       {
         <NavLink
-          to="/payment"
-          className={({ isActive, isPending }) =>
-            isPending ? '' : isActive ? styles.active : styles.pending
-          }
-        >
-          <Text type="Body 2 Bold">{t('payment')}</Text>
-        </NavLink>
-      }
-      {
-        <NavLink
           to="/subscription-plan"
           className={({ isActive, isPending }) =>
             isPending ? '' : isActive ? styles.active : styles.pending
@@ -100,12 +90,22 @@ export const PrimaryHeader = () => {
       }
       {
         <NavLink
-          to="/main-calendar"
+          to="/timekeeping"
           className={({ isActive, isPending }) =>
             isPending ? '' : isActive ? styles.active : styles.pending
           }
         >
-          <Text type="Body 2 Bold">{t('mainCalendar')}</Text>
+          <Text type="Body 2 Bold">{t('timekeeping')}</Text>
+        </NavLink>
+      }
+      {
+        <NavLink
+          to="/payment"
+          className={({ isActive, isPending }) =>
+            isPending ? '' : isActive ? styles.active : styles.pending
+          }
+        >
+          <Text type="Body 2 Bold">{t('payment')}</Text>
         </NavLink>
       }
 

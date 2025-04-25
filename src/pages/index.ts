@@ -1,5 +1,4 @@
 export * from './Login';
-export * from './Admin';
 export * from './Course';
 export * from './Trainer';
 export * from './Student';
@@ -8,3 +7,4 @@ export * from './Facility';
 export * from './Payment';
 export * from './SubscriptionPlan';
 export * from './MyCalendar';
+export * from './Timekeeping';
